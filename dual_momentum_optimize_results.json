@@ -1,0 +1,52 @@
+{
+  "best": {
+    "lookback": 6,
+    "hold": 1,
+    "cagr": 8.28,
+    "maxdd": -23.94,
+    "sharpe": 0.561,
+    "mult": 4.53
+  },
+  "all_results": [
+    {
+      "lookback": 24,
+      "hold": 1,
+      "cagr": 10.01,
+      "maxdd": -31.71,
+      "sharpe": 0.632,
+      "mult": 6.13
+    },
+    {
+      "lookback": 18,
+      "hold": 1,
+      "cagr": 8.37,
+      "maxdd": -27.12,
+      "sharpe": 0.532,
+      "mult": 4.61
+    },
+    {
+      "lookback": 6,
+      "hold": 1,
+      "cagr": 8.28,
+      "maxdd": -23.94,
+      "sharpe": 0.561,
+      "mult": 4.53
+    },
+    {
+      "lookback": 12,
+      "hold": 1,
+      "cagr": 8.15,
+      "maxdd": -19.67,
+      "sharpe": 0.536,
+      "mult": 4.43
+    },
+    {
+      "lookback": 9,
+      "hold": 1,
+      "cagr": 7.09,
+      "maxdd": -20.14,
+      "sharpe": 0.469,
+      "mult": 3.67
+    }
+  ]
+}

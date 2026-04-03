@@ -1,0 +1,26 @@
+{
+  "BTC_above_70000": {
+    "ticker": "BTC",
+    "threshold": 70000,
+    "direction": "above",
+    "label": "BTC 7万ドル突破",
+    "created": "2026-03-29 06:59",
+    "triggered": false
+  },
+  "BTC_below_60000": {
+    "ticker": "BTC",
+    "threshold": 60000,
+    "direction": "below",
+    "label": "BTC 6万ドル割れ",
+    "created": "2026-03-29 06:59",
+    "triggered": false
+  },
+  "ETH_above_2500": {
+    "ticker": "ETH",
+    "threshold": 2500,
+    "direction": "above",
+    "label": "ETH 2500ドル突破",
+    "created": "2026-03-29 06:59",
+    "triggered": false
+  }
+}

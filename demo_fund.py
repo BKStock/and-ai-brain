@@ -1,0 +1,785 @@
+"""
+&AI QUANTUM EDGE - 3デモファンド管理システム v2.0
+=================================================
+FUND-1 🛡️ コンサバ   : 月利5%目標
+FUND-2 ⚡ アグレッシブ: 月利20%目標
+FUND-3 🚀 ギャンブル  : 月利35%目標
+
+開始資金: 各¥10,000,000（合計¥30,000,000）
+開始日: 2026-03-27
+"""
+
+import json, os, requests
+from datetime import datetime, date
+from dotenv import load_dotenv
+load_dotenv('/Users/mr.k/Projects/and-ai-brain/.env')
+
+
+# ========================================
+# 多戦略シグナルエンジン
+# ========================================
+
+def get_fear_greed() -> int:
+    """Fear&Greed指数を取得（キャッシュ付き）"""
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=5)
+        return int(r.json()['data'][0]['value'])
+    except:
+        return 50
+
+
+def contrarian_signal(ticker: str, fund_id: str) -> dict:
+    """
+    逆張り戦略: Fear&Greed <= 15 の時にロングシグナル
+    Returns: {"signal": "LONG"|"NONE", "reason": str, "confidence": float}
+    """
+    fg = get_fear_greed()
+    config = FUNDS.get(fund_id, {})
+    fg_max = config.get("fear_greed_max", 25)
+
+    if fg <= 15:
+        return {
+            "signal": "LONG",
+            "reason": f"極度の恐怖（F&G={fg}）→ 逆張りロング",
+            "confidence": 0.85,
+            "strategy": "CONTRARIAN",
+        }
+    elif fg <= fg_max:
+        return {
+            "signal": "LONG",
+            "reason": f"恐怖圏（F&G={fg}）→ 逆張りチャンス",
+            "confidence": 0.65,
+            "strategy": "CONTRARIAN",
+        }
+    return {"signal": "NONE", "reason": f"F&G={fg} → 逆張り条件なし", "confidence": 0.0, "strategy": "CONTRARIAN"}
+
+
+def grid_signal(ticker: str, current_price: float, fund_id: str) -> dict:
+    """
+    グリッド戦略: 一定価格間隔でポジションを積み重ねる
+    ファンドのgrid_stateを参照してシグナルを生成
+    """
+    fund = load_fund(fund_id)
+    grid_state = fund.get("grid_state", {}).get(ticker, {})
+
+    if not grid_state:
+        # グリッド初期化: 現在価格を基準に±2%間隔で5グリッド
+        grid_spacing = 0.02  # 2%
+        return {
+            "signal": "INIT_GRID",
+            "reason": f"グリッド初期化 @{current_price:.2f}",
+            "confidence": 0.70,
+            "strategy": "GRID",
+            "grid_base": current_price,
+            "grid_spacing": grid_spacing,
+        }
+
+    base = grid_state.get("base_price", current_price)
+    spacing = grid_state.get("spacing", 0.02)
+    levels_bought = grid_state.get("levels_bought", [])
+
+    # 現在価格がグリッドレベル（基準から-2%, -4%, -6%...）に達しているか確認
+    for level in [1, 2, 3, 4, 5]:
+        level_price = base * (1 - spacing * level)
+        if current_price <= level_price and level not in levels_bought:
+            return {
+                "signal": "LONG",
+                "reason": f"グリッドLv{level} @{level_price:.2f}（現在{current_price:.2f}）",
+                "confidence": 0.75,
+                "strategy": "GRID",
+                "grid_level": level,
+            }
+
+    return {"signal": "NONE", "reason": "グリッド条件なし", "confidence": 0.0, "strategy": "GRID"}
+
+
+def trend_follow_signal(ticker: str, current_price: float) -> dict:
+    """
+    トレンドフォロー戦略: BTC支配率 × 価格帯で判定
+    BTC支配率 > 52% かつ 20日MA上 → ロング
+    BTC支配率 < 48% かつ 20日MA下 → ショートまたは見送り
+    """
+    try:
+        import yfinance as yf
+        import numpy as np
+
+        # BTC支配率
+        try:
+            r = requests.get("https://api.coingecko.com/api/v3/global", timeout=5)
+            btc_dom = r.json()['data']['market_cap_percentage']['btc']
+        except:
+            btc_dom = 50.0
+
+        # 20日MA取得
+        yf_ticker = ticker + "-USD" if ticker in ["BTC", "ETH", "SOL", "XRP"] else ticker
+        hist = yf.Ticker(yf_ticker).history(period="30d")
+        if len(hist) < 20:
+            return {"signal": "NONE", "reason": "データ不足", "confidence": 0.0, "strategy": "TREND_FOLLOW"}
+
+        ma20 = hist['Close'].iloc[-20:].mean()
+        above_ma = current_price > ma20
+
+        if btc_dom > 52 and above_ma:
+            return {
+                "signal": "LONG",
+                "reason": f"BTC支配率{btc_dom:.1f}% + MA20上抜け → トレンドフォローロング",
+                "confidence": 0.80,
+                "strategy": "TREND_FOLLOW",
+            }
+        elif btc_dom < 48 and not above_ma:
+            return {
+                "signal": "SHORT",
+                "reason": f"BTC支配率{btc_dom:.1f}% + MA20下抜け → トレンドフォローショート",
+                "confidence": 0.70,
+                "strategy": "TREND_FOLLOW",
+            }
+        return {"signal": "NONE", "reason": f"BTC支配率{btc_dom:.1f}% → トレンド不明確", "confidence": 0.0, "strategy": "TREND_FOLLOW"}
+    except Exception as e:
+        return {"signal": "NONE", "reason": f"エラー: {str(e)[:50]}", "confidence": 0.0, "strategy": "TREND_FOLLOW"}
+
+
+def long_short_signal(ticker: str, score: float) -> dict:
+    """
+    ロング/ショート混合戦略（FUND-3用）
+    スコア > 75 → ロング
+    スコア < 30 → ショート
+    F&G > 80 + スコア < 40 → ショート強化
+    """
+    fg = get_fear_greed()
+
+    if score >= 75:
+        return {
+            "signal": "LONG",
+            "reason": f"スコア{score}点 → ロング",
+            "confidence": min(score / 100, 0.95),
+            "strategy": "LONG_SHORT",
+        }
+    elif score <= 30 or (fg > 80 and score < 40):
+        short_reason = f"スコア{score}点 + F&G={fg}" if fg > 80 else f"スコア{score}点"
+        return {
+            "signal": "SHORT",
+            "reason": f"{short_reason} → ショート",
+            "confidence": 0.70,
+            "strategy": "LONG_SHORT",
+        }
+    return {"signal": "NONE", "reason": f"スコア{score}点 → シグナルなし", "confidence": 0.0, "strategy": "LONG_SHORT"}
+
+
+def select_best_strategy(fund_id: str, ticker: str, score: float,
+                         current_price: float) -> dict:
+    """
+    ファンドの戦略リストから最適シグナルを選択
+    Returns: best signal dict or {"signal": "NONE"}
+    """
+    config = FUNDS[fund_id]
+    strategies = config.get("strategies", [])
+    signals = []
+
+    if "STR_C_CONTRARIAN" in strategies or "A10S_GRID" in strategies:
+        sig = contrarian_signal(ticker, fund_id)
+        if sig["signal"] != "NONE":
+            signals.append(sig)
+
+    if "A10S_GRID" in strategies:
+        sig = grid_signal(ticker, current_price, fund_id)
+        if sig["signal"] not in ("NONE",):
+            signals.append(sig)
+
+    if "STR_B_BALANCE" in strategies or "MOMENTUM_TOP3" in strategies:
+        sig = trend_follow_signal(ticker, current_price)
+        if sig["signal"] != "NONE":
+            signals.append(sig)
+
+    if "STR_A_AGGRESSIVE" in strategies:
+        sig = long_short_signal(ticker, score)
+        if sig["signal"] != "NONE":
+            signals.append(sig)
+
+    if not signals:
+        # フォールバック: スコアベースモメンタム
+        if score >= config.get("score_threshold", 75):
+            return {"signal": "LONG", "reason": f"モメンタムスコア{score}点", "confidence": score / 100, "strategy": "MOMENTUM"}
+        return {"signal": "NONE", "reason": "条件なし", "confidence": 0.0, "strategy": "NONE"}
+
+    # 信頼度が最も高いシグナルを選択
+    signals.sort(key=lambda x: x["confidence"], reverse=True)
+    return signals[0]
+
+INITIAL_CAPITAL = 10_000_000  # 各ファンド1,000万円
+
+# ========================================
+# 3ファンド定義
+# ========================================
+FUNDS = {
+    "fund_1": {
+        "name": "FUND-1",
+        "emoji": "🛡️",
+        "label": "コンサバ",
+        "target_monthly": 5.0,  # 月利5%
+        "target_annual": 80.0,
+        "file": "/Users/mr.k/Projects/and-ai-brain/fund_1.json",
+        # エントリールール
+        "score_threshold": 80,       # スコア80点以上
+        "sentiment_min": 6.0,        # X感情6.0以上（厳格）
+        "macro_min": 5,              # 世界経済スコア5以上
+        "fear_greed_max": 25,        # F&G 25以下でのみ逆張り発動
+        "volume_multiplier": 2.0,    # 出来高2倍以上必要
+        # 資金管理
+        "position_size_pct": 8.0,    # 残高8%/回（小さめ）
+        "max_positions": 3,          # 最大3銘柄
+        "cash_min_pct": 60.0,        # キャッシュ60%維持
+        "leverage": 3,               # レバレッジ3倍
+        # 損益管理
+        "stop_loss_pct": -3.0,       # -3%損切り（タイト）
+        "take_profit_1": 8.0,        # +8%で50%利確（2026-03-29 KK承認）
+        "take_profit_2": 15.0,       # +15%で残り利確（2026-03-29 KK承認）
+        # 戦略
+        "strategies": ["A10S_GRID", "STR_C_CONTRARIAN"],
+        "trade_frequency": "低頻度（月2〜4回）",
+        "risk_level": "低",
+        "color": "🟢",
+        # 対象銘柄（安全資産重視）
+        "preferred_tickers": ["BTC", "ETH", "Gold", "XRP", "SOL"],
+    },
+    "fund_2": {
+        "name": "FUND-2",
+        "emoji": "⚡",
+        "label": "アグレッシブ",
+        "target_monthly": 10.0,
+        "target_annual": 214.0,
+        "file": "/Users/mr.k/Projects/and-ai-brain/fund_2.json",
+        # エントリールール
+        "score_threshold": 75,       # スコア75点以上
+        "sentiment_min": 5.5,        # X感情5.5以上
+        "macro_min": 0,              # 世界経済スコア0以上
+        "fear_greed_max": 40,        # F&G 40以下で逆張り発動
+        "volume_multiplier": 1.5,    # 出来高1.5倍以上
+        # 資金管理
+        "position_size_pct": 10.0,   # 残高10%/回
+        "max_positions": 5,          # 最大5銘柄
+        "cash_min_pct": 40.0,        # キャッシュ40%維持
+        "leverage": 5,               # レバレッジ5倍
+        # 損益管理
+        "stop_loss_pct": -5.0,       # -5%損切り
+        "take_profit_1": 8.0,        # +8%で50%利確
+        "take_profit_2": 15.0,       # +15%で残り利確
+        # 戦略
+        "strategies": ["STR_B_BALANCE", "MOMENTUM_TOP3"],
+        "trade_frequency": "中頻度（週2〜3回）",
+        "risk_level": "中",
+        "color": "🟡",
+        # 対象銘柄（モメンタム重視）
+        "preferred_tickers": ["NVDA", "ARM", "AMD", "BTC", "ETH", "SOL", "TRX", "TON"],
+    },
+    "fund_3": {
+        "name": "FUND-3",
+        "emoji": "🚀",
+        "label": "チャレンジ",
+        "target_monthly": 15.0,
+        "target_annual": 435.0,
+        "file": "/Users/mr.k/Projects/and-ai-brain/fund_3.json",
+        # エントリールール（最も緩い）
+        "score_threshold": 70,       # スコア70点以上
+        "sentiment_min": 5.0,        # X感情5.0以上
+        "macro_min": -10,            # 世界経済スコア制限なし
+        "fear_greed_max": 50,        # 幅広く発動
+        "volume_multiplier": 1.2,    # 出来高1.2倍以上
+        # 資金管理
+        "position_size_pct": 15.0,   # 残高15%/回（大きめ）
+        "max_positions": 5,          # 最大5銘柄
+        "cash_min_pct": 20.0,        # キャッシュ20%（少ない）
+        "leverage": 10,              # レバレッジ10倍
+        # 損益管理
+        "stop_loss_pct": -5.0,       # -5%損切り
+        "take_profit_1": 10.0,       # +10%で50%利確
+        "take_profit_2": 20.0,       # +20%で残り利確
+        # 戦略
+        "strategies": ["STR_A_AGGRESSIVE", "STR_B_BALANCE", "STR_C_CONTRARIAN", "A10S_GRID"],
+        "trade_frequency": "高頻度（毎日）",
+        "risk_level": "高",
+        "color": "🔴",
+        # 対象銘柄（高ボラ重視）
+        "preferred_tickers": ["NVDA", "ARM", "AMD", "SOL", "BTC", "ETH", "TRX", "TON", "DKNG", "SEA"],
+    },
+}
+
+
+def load_fund(fund_id: str) -> dict:
+    """ファンドデータ読み込み"""
+    config = FUNDS[fund_id]
+    if os.path.exists(config["file"]):
+        with open(config["file"], 'r') as f:
+            return json.load(f)
+    # 初期データ
+    return {
+        "fund_id": fund_id,
+        "name": config["name"],
+        "label": config["label"],
+        "target_monthly": config["target_monthly"],
+        "initial_capital": INITIAL_CAPITAL,
+        "current_value": INITIAL_CAPITAL,
+        "portfolio_value": INITIAL_CAPITAL,
+        "start_date": "2026-03-27",
+        "positions": {},
+        "history": [],
+        "total_return_pct": 0.0,
+        "monthly_return_pct": 0.0,
+        "best_day": {"date": "", "return": 0},
+        "worst_day": {"date": "", "return": 0},
+        "win_days": 0,
+        "loss_days": 0,
+        "total_trades": 0,
+        "total_days": 0,
+    }
+
+
+def save_fund(fund_id: str, data: dict):
+    config = FUNDS[fund_id]
+    with open(config["file"], 'w') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def get_fund_config(fund_id: str) -> dict:
+    """ファンドの設定情報を返す"""
+    return FUNDS.get(fund_id, {})
+
+
+def check_entry_signal(fund_id: str, ticker: str, score: float, sentiment: float,
+                        macro_score: float, volume_ratio: float, funding_rate: float) -> tuple[bool, list]:
+    """
+    ファンドのエントリー条件チェック
+    Returns: (can_enter: bool, reasons: list)
+    """
+    config = FUNDS[fund_id]
+    reasons = []
+    passed = []
+
+    # 1. スコアチェック
+    if score >= config["score_threshold"]:
+        passed.append(f"✅ スコア {score:.0f}点 (閾値:{config['score_threshold']})")
+    else:
+        reasons.append(f"❌ スコア不足 {score:.0f}/{config['score_threshold']}点")
+
+    # 2. X感情チェック
+    if sentiment >= config["sentiment_min"]:
+        passed.append(f"✅ X感情 {sentiment:.1f} (最低:{config['sentiment_min']})")
+    else:
+        reasons.append(f"❌ X感情不足 {sentiment:.1f}/{config['sentiment_min']}")
+
+    # 3. 世界経済スコア
+    if macro_score >= config["macro_min"]:
+        passed.append(f"✅ マクロ {macro_score:.0f} (最低:{config['macro_min']})")
+    else:
+        reasons.append(f"❌ マクロ不足 {macro_score:.0f}/{config['macro_min']}")
+
+    # 4. 出来高
+    if volume_ratio >= config["volume_multiplier"]:
+        passed.append(f"✅ 出来高 {volume_ratio:.1f}倍 (最低:{config['volume_multiplier']}倍)")
+    else:
+        reasons.append(f"❌ 出来高不足 {volume_ratio:.1f}/{config['volume_multiplier']}倍")
+
+    # 5. FRチェック（共通ルール）
+    if funding_rate <= 0.001:  # 0.1%以下
+        passed.append(f"✅ FR {funding_rate:.4f}")
+    else:
+        reasons.append(f"❌ FR高すぎ {funding_rate:.4f} (最大:0.001)")
+
+    # 全条件クリアかチェック
+    can_enter = len(reasons) == 0
+    return can_enter, passed + reasons
+
+
+def format_fund_summary() -> str:
+    """3ファンド一覧サマリー"""
+    lines = ["━━━━━━━━━━━━━━━", "🏦 *3デモファンド サマリー*\n"]
+
+    total_value = 0
+    total_initial = INITIAL_CAPITAL * 3
+
+    for fund_id, config in FUNDS.items():
+        fund = load_fund(fund_id)
+        val = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+        total_value += val
+        pnl = val - INITIAL_CAPITAL
+        pnl_pct = (pnl / INITIAL_CAPITAL) * 100
+        target = config["target_monthly"]
+        arrow = "📈" if pnl >= 0 else "📉"
+
+        lines.append(
+            f"{config['emoji']} *{config['name']}* {config['label']}\n"
+            f"   目標: 月利{target}% | リスク: {config['risk_level']}\n"
+            f"   ¥{val:,}  {arrow} {pnl_pct:+.2f}%\n"
+            f"   戦略: {' + '.join(config['strategies'][:2])}\n"
+        )
+
+    total_pnl = total_value - total_initial
+    total_pnl_pct = (total_pnl / total_initial) * 100
+    lines.append("━━━━━━━━━━━━━━━")
+    lines.append(f"💰 合計: ¥{total_value:,}  ({total_pnl_pct:+.2f}%)")
+
+    return "\n".join(lines)
+
+
+def format_fund_detail(fund_id: str) -> str:
+    """ファンド詳細レポート"""
+    config = FUNDS[fund_id]
+    fund = load_fund(fund_id)
+
+    val = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+    pnl = val - INITIAL_CAPITAL
+    pnl_pct = (pnl / INITIAL_CAPITAL) * 100
+
+    days = fund.get("total_days", 0)
+    wins = fund.get("win_days", 0)
+    win_rate = (wins / days * 100) if days > 0 else 0
+
+    # 月利進捗
+    monthly_progress = pnl_pct / config["target_monthly"] * 100 if config["target_monthly"] > 0 else 0
+    progress_bar = "█" * int(monthly_progress / 10) + "░" * (10 - int(monthly_progress / 10))
+    progress_bar = progress_bar[:10]
+
+    report = f"""{config['emoji']} *{config['name']} {config['label']}*
+━━━━━━━━━━━━━━━
+
+🎯 *月利目標: {config['target_monthly']}%*
+進捗: [{progress_bar}] {monthly_progress:.1f}%
+
+💰 資産状況
+現在値: ¥{val:,}
+損益: ¥{pnl:+,} ({pnl_pct:+.2f}%)
+勝率: {win_rate:.0f}% ({wins}/{days}日)
+
+📋 エントリー条件
+スコア: {config['score_threshold']}点以上
+X感情: {config['sentiment_min']}以上
+出来高: {config['volume_multiplier']}倍以上
+レバレッジ: {config['leverage']}倍
+損切り: {config['stop_loss_pct']}%
+利確①: +{config['take_profit_1']}%
+利確②: +{config['take_profit_2']}%
+
+💵 資金管理
+取引サイズ: 残高{config['position_size_pct']}%
+同時保有: 最大{config['max_positions']}銘柄
+キャッシュ維持: {config['cash_min_pct']}%以上
+
+🎲 戦略: {' + '.join(config['strategies'])}
+取引頻度: {config['trade_frequency']}
+リスク: {config['risk_level']}
+"""
+    return report
+
+
+def initialize_all_funds():
+    """全ファンド初期化"""
+    for fund_id in FUNDS:
+        fund = load_fund(fund_id)
+        config = FUNDS[fund_id]
+        if not fund["history"]:
+            fund["history"].append({
+                "date": "2026-03-27",
+                "value": INITIAL_CAPITAL,
+                "day_return_pct": 0.0,
+                "total_return_pct": 0.0,
+                "note": f"{config['name']} {config['label']} 運用開始！月利{config['target_monthly']}%目標"
+            })
+            save_fund(fund_id, fund)
+            print(f"✅ {config['name']} {config['label']} 初期化完了（月利{config['target_monthly']}%目標）")
+
+
+def format_all_funds_report() -> str:
+    """デイリーレポート用 全ファンドセクション"""
+    lines = ["━━━━━━━━━━━━━━━", "🏦 *デモファンド（3戦略）*\n"]
+
+    for fund_id, config in FUNDS.items():
+        fund = load_fund(fund_id)
+        val = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+        pnl_pct = (val - INITIAL_CAPITAL) / INITIAL_CAPITAL * 100
+        arrow = "📈" if pnl_pct >= 0 else "📉"
+        progress = pnl_pct / config["target_monthly"] * 100
+
+        lines.append(
+            f"{config['emoji']} {config['name']}（月利{config['target_monthly']}%目標）\n"
+            f"   ¥{val:,}  {arrow}{pnl_pct:+.2f}%  進捗{progress:.0f}%"
+        )
+
+    lines.append("━━━━━━━━━━━━━━━")
+    return "\n".join(lines)
+
+
+if __name__ == "__main__":
+    print("⚛️ &AI QUANTUM EDGE - 3デモファンド v2.0\n")
+    initialize_all_funds()
+    print()
+    print(format_fund_summary())
+    print()
+
+    for fund_id in FUNDS:
+        print(format_fund_detail(fund_id))
+        print()
+
+
+# ========================================
+# シミュレーション取引エンジン
+# ========================================
+
+def simulate_trade(fund_id: str, ticker: str, direction: str, entry_price: float,
+                   reason: str = "") -> dict:
+    """
+    デモファンドにシミュレーション取引を記録
+    direction: "LONG" or "SHORT"
+    """
+    fund = load_fund(fund_id)
+    config = FUNDS[fund_id]
+    
+    equity = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+    position_size_pct = config["position_size_pct"] / 100
+    leverage = config["leverage"]
+    
+    # ポジションサイズ計算
+    position_value = equity * position_size_pct
+    position_size = (position_value * leverage) / entry_price
+    
+    trade = {
+        "id": f"{fund_id}_{len(fund.get('open_positions', []))+1}",
+        "ticker": ticker,
+        "direction": direction,
+        "entry_price": entry_price,
+        "size": position_size,
+        "position_value": position_value,
+        "leverage": leverage,
+        "stop_loss": entry_price * (1 + config["stop_loss_pct"]/100) if direction == "LONG" else entry_price * (1 - config["stop_loss_pct"]/100),
+        "take_profit_1": entry_price * (1 + config["take_profit_1"]/100) if direction == "LONG" else entry_price * (1 - config["take_profit_1"]/100),
+        "take_profit_2": entry_price * (1 + config["take_profit_2"]/100) if direction == "LONG" else entry_price * (1 - config["take_profit_2"]/100),
+        "entry_time": __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "status": "OPEN",
+        "reason": reason,
+        "pnl": 0.0,
+        "pnl_pct": 0.0,
+    }
+    
+    if "open_positions" not in fund:
+        fund["open_positions"] = []
+    fund["open_positions"].append(trade)
+    fund["total_trades"] = fund.get("total_trades", 0) + 1
+    save_fund(fund_id, fund)
+    return trade
+
+
+def update_positions(fund_id: str, current_prices: dict) -> list:
+    """
+    オープンポジションを現在価格で評価・損切り/利確判定
+    current_prices: {"BTC": 65000, "ETH": 2000, ...}
+    """
+    fund = load_fund(fund_id)
+    config = FUNDS[fund_id]
+    positions = fund.get("open_positions", [])
+    closed = []
+    
+    equity = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+    total_pnl = 0
+    
+    for pos in positions:
+        if pos["status"] != "OPEN":
+            continue
+        
+        ticker = pos["ticker"]
+        current_price = current_prices.get(ticker)
+        if not current_price:
+            continue
+        
+        entry = pos["entry_price"]
+        direction = pos["direction"]
+        size = pos["size"]
+        leverage = pos["leverage"]
+        
+        # PnL計算
+        if direction == "LONG":
+            pnl_pct = (current_price - entry) / entry * 100 * leverage
+        else:
+            pnl_pct = (entry - current_price) / entry * 100 * leverage
+        
+        pnl_jpy = pos["position_value"] * pnl_pct / 100
+        pos["pnl"] = pnl_jpy
+        pos["pnl_pct"] = pnl_pct
+        pos["current_price"] = current_price
+        
+        # 損切り判定
+        sl_hit = False
+        tp1_hit = False
+        tp2_hit = False
+        
+        if direction == "LONG":
+            sl_hit = current_price <= pos["stop_loss"]
+            tp1_hit = current_price >= pos["take_profit_1"]
+            tp2_hit = current_price >= pos["take_profit_2"]
+        else:
+            sl_hit = current_price >= pos["stop_loss"]
+            tp1_hit = current_price <= pos["take_profit_1"]
+            tp2_hit = current_price <= pos["take_profit_2"]
+        
+        if sl_hit:
+            pos["status"] = "CLOSED_SL"
+            pos["exit_price"] = current_price
+            pos["exit_time"] = __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M")
+            total_pnl += pnl_jpy
+            closed.append(pos)
+            fund["loss_days"] = fund.get("loss_days", 0) + 1
+        elif tp2_hit:
+            pos["status"] = "CLOSED_TP2"
+            pos["exit_price"] = current_price
+            pos["exit_time"] = __import__('datetime').datetime.now().strftime("%Y-%m-%d %H:%M")
+            total_pnl += pnl_jpy
+            closed.append(pos)
+            fund["win_days"] = fund.get("win_days", 0) + 1
+        elif tp1_hit and not pos.get("tp1_partial_done"):
+            # T1で50%利確
+            pos["tp1_partial_done"] = True
+            partial_pnl = pnl_jpy * 0.5
+            total_pnl += partial_pnl
+            pos["size"] *= 0.5  # 残り50%保持
+    
+    # ポートフォリオ更新
+    new_equity = equity + total_pnl
+    fund["portfolio_value"] = round(new_equity)
+    fund["current_value"] = round(new_equity)
+    
+    # 履歴記録
+    today = __import__('datetime').date.today().strftime("%Y-%m-%d")
+    existing_today = [h for h in fund.get("history", []) if h.get("date") == today]
+    
+    if existing_today:
+        existing_today[-1]["value"] = round(new_equity)
+        existing_today[-1]["day_pnl"] = round(total_pnl)
+        existing_today[-1]["open_positions"] = len([p for p in positions if p["status"] == "OPEN"])
+    else:
+        day_return_pct = total_pnl / equity * 100 if equity > 0 else 0
+        fund.setdefault("history", []).append({
+            "date": today,
+            "value": round(new_equity),
+            "day_return_pct": round(day_return_pct, 2),
+            "total_return_pct": round((new_equity - INITIAL_CAPITAL) / INITIAL_CAPITAL * 100, 2),
+            "day_pnl": round(total_pnl),
+            "open_positions": len([p for p in positions if p["status"] == "OPEN"]),
+        })
+    
+    save_fund(fund_id, fund)
+    return closed
+
+
+def run_daily_simulation(market_data: dict = None):
+    """
+    毎日の自動シミュレーション実行
+    1. 現在価格でポジション評価
+    2. シグナル確認して新規エントリー判定
+    3. ファンドごとのパフォーマンス更新
+    """
+    import requests
+    from momentum_engine import get_all_momentum_scores
+    
+    print("📊 デモファンドシミュレーション実行中...")
+    
+    # 現在価格取得
+    current_prices = {}
+    try:
+        # Hyperliquidから仮想通貨価格
+        r = requests.post("https://api.hyperliquid.xyz/info",
+            json={"type": "allMids"}, timeout=10)
+        if r.status_code == 200:
+            mids = r.json()
+            current_prices.update({k: float(v) for k, v in mids.items()})
+    except: pass
+    
+    try:
+        # Yahoo Financeから株価
+        import yfinance as yf
+        stock_tickers = {"NVDA": "NVDA", "MSFT": "MSFT", "AMD": "AMD", "ARM": "ARM"}
+        for ticker in stock_tickers:
+            try:
+                data = yf.Ticker(ticker).fast_info
+                current_prices[ticker] = data.last_price
+            except: pass
+    except: pass
+    
+    # モメンタムスコア取得
+    try:
+        scores = get_all_momentum_scores()
+        score_dict = {s['name']: s['score'] for s in scores}
+    except:
+        score_dict = {}
+    
+    results = []
+    
+    for fund_id in ["fund_1", "fund_2", "fund_3"]:
+        config = FUNDS[fund_id]
+        fund = load_fund(fund_id)
+        equity = fund.get("portfolio_value", fund.get("current_value", INITIAL_CAPITAL))
+        open_positions = [p for p in fund.get("open_positions", []) if p["status"] == "OPEN"]
+        
+        # 1. 既存ポジション更新
+        closed = update_positions(fund_id, current_prices)
+        for c in closed:
+            pnl_type = "🔴損切り" if c["status"] == "CLOSED_SL" else "🟢利確"
+            results.append(f"{config['emoji']} {config['name']}: {c['ticker']} {pnl_type} {c['pnl_pct']:+.1f}%")
+        
+        # 2. 新規エントリー判定（ファンド別戦略で銘柄選定）
+        max_pos = config["max_positions"]
+        cash_min = config["cash_min_pct"] / 100
+        current_open = len([p for p in fund.get("open_positions", []) if p.get("status") == "OPEN"])
+        preferred = config["preferred_tickers"]
+        threshold = config["score_threshold"]
+        strategies = config["strategies"]
+        
+        if current_open < max_pos:
+            # ファンド別の候補銘柄を絞り込む
+            candidates = []
+            for name, score in score_dict.items():
+                if name not in preferred:
+                    continue  # ファンドの対象銘柄のみ
+                if name not in current_prices:
+                    continue
+                candidates.append((name, score))
+
+            candidates.sort(key=lambda x: x[1], reverse=True)
+
+            for ticker, score in candidates[:3]:
+                if current_open >= max_pos:
+                    break
+
+                price = current_prices.get(ticker, 0)
+                if price <= 0:
+                    continue
+
+                used_pct = (current_open * config["position_size_pct"]) / 100
+                if used_pct + config["position_size_pct"] / 100 > (1 - cash_min):
+                    continue
+
+                # 多戦略シグナル選択
+                best_sig = select_best_strategy(fund_id, ticker, score, price)
+                if best_sig["signal"] == "NONE":
+                    continue
+
+                direction = best_sig["signal"]
+                # INIT_GRID はロングとして扱う
+                if direction == "INIT_GRID":
+                    direction = "LONG"
+
+                trade = simulate_trade(
+                    fund_id, ticker, direction, price,
+                    reason=f"{best_sig['strategy']}: {best_sig['reason']}"
+                )
+                results.append(
+                    f"{config['emoji']} {config['name']}: {ticker} {direction} @${price:,.2f} "
+                    f"[{best_sig['strategy']}] conf={best_sig['confidence']:.0%}"
+                )
+                current_open += 1
+        
+        # 更新後のファンドデータ
+        fund = load_fund(fund_id)
+        new_equity = fund.get("portfolio_value", INITIAL_CAPITAL)
+        pnl_pct = (new_equity - INITIAL_CAPITAL) / INITIAL_CAPITAL * 100
+        results.append(f"  └ 残高: ¥{new_equity:,.0f} ({pnl_pct:+.2f}%)")
+    
+    return results
+
+

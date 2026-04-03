@@ -1,0 +1,162 @@
+{
+  "timestamp": "2026/03/29 20:00",
+  "economy_score": -62,
+  "status": "リスクオフ",
+  "market_data": {
+    "BTC": {
+      "ticker": "BTC-USD",
+      "price": 66486.45,
+      "return": -0.6841,
+      "risk": 0.495,
+      "sharpe": -1.382,
+      "change_24h": 0.25
+    },
+    "ETH": {
+      "ticker": "ETH-USD",
+      "price": 1995.29,
+      "return": -0.9171,
+      "risk": 0.6467,
+      "sharpe": -1.418,
+      "change_24h": 0.13
+    },
+    "TRX": {
+      "ticker": "TRX-USD",
+      "price": 0.32,
+      "return": 0.3274,
+      "risk": 0.2319,
+      "sharpe": 1.412,
+      "change_24h": 0.53
+    },
+    "SOL": {
+      "ticker": "SOL-USD",
+      "price": 82.16,
+      "return": -0.9755,
+      "risk": 0.6458,
+      "sharpe": -1.51,
+      "change_24h": 0.18
+    },
+    "XRP": {
+      "ticker": "XRP-USD",
+      "price": 1.33,
+      "return": -0.7278,
+      "risk": 0.695,
+      "sharpe": -1.047,
+      "change_24h": 0.03
+    },
+    "NVDA": {
+      "ticker": "NVDA",
+      "price": 167.52,
+      "return": -0.2468,
+      "risk": 0.3431,
+      "sharpe": -0.719,
+      "change_24h": -2.17
+    },
+    "MSFT": {
+      "ticker": "MSFT",
+      "price": 356.77,
+      "return": -0.9418,
+      "risk": 0.2888,
+      "sharpe": -3.261,
+      "change_24h": -2.51
+    },
+    "ARM": {
+      "ticker": "ARM",
+      "price": 144.13,
+      "return": 0.2107,
+      "risk": 0.529,
+      "sharpe": 0.398,
+      "change_24h": -6.89
+    },
+    "LVS": {
+      "ticker": "LVS",
+      "price": 51.69,
+      "return": -0.5663,
+      "risk": 0.3451,
+      "sharpe": -1.641,
+      "change_24h": -1.35
+    },
+    "MLCO": {
+      "ticker": "MLCO",
+      "price": 5.62,
+      "return": -1.2442,
+      "risk": 0.4245,
+      "sharpe": -2.931,
+      "change_24h": 1.63
+    },
+    "SEA": {
+      "ticker": "SE",
+      "price": 78.16,
+      "return": -1.6179,
+      "risk": 0.5245,
+      "sharpe": -3.085,
+      "change_24h": -2.13
+    },
+    "Gold": {
+      "ticker": "GC=F",
+      "price": 4524.3,
+      "return": 0.3374,
+      "risk": 0.3918,
+      "sharpe": 0.861,
+      "change_24h": 3.4
+    }
+  },
+  "sentiment": {
+    "world_economy_score": -62,
+    "status": "リスクオフ",
+    "key_signals": [
+      "主要テック株（MSFT -2.51%, NVDA -2.17%）が急落。MSFTは2008年以来最悪の四半期に直面",
+      "Dow Jones & NASDAQが-10%調整局面入り。市場全体で強いリスク回避姿勢",
+      "金（Gold）が+3.40%と大幅上昇。安全資産への資金逃避が顕著"
+    ],
+    "sentiment_by_asset": {
+      "BTC": {
+        "score": 4,
+        "trend": "down",
+        "reason": "「Rainbow chartがgay zone以下」という投稿が最多upvote。年率リターン-68.4%と厳しい状況だが、実用化の投稿もあり底堅さも"
+      },
+      "ETH": {
+        "score": 3,
+        "trend": "down",
+        "reason": "BTCと連動して弱気。年率リターン-91.7%、リスク64.7%と暗号資産全般への不信感が強い"
+      },
+      "NVDA": {
+        "score": 2,
+        "trend": "down",
+        "reason": "GoogleのAIメモリ圧縮技術によりMicron等メモリ株が急落。AI関連全般への懸念が波及し-2.17%"
+      },
+      "Gold": {
+        "score": 9,
+        "trend": "up",
+        "reason": "+3.40%の大幅上昇。年率リターン33.7%。日本の石油先物ショートポジション構築、イラン戦争懸念など地政学リスクで安全資産需要が急増"
+      }
+    },
+    "prediction_48h": {
+      "BTC": {
+        "range": "-2〜+1%",
+        "probability": 65
+      },
+      "Gold": {
+        "range": "+1〜+3%",
+        "probability": 70
+      }
+    },
+    "summary": "市場は明確なリスクオフ局面。テック株の大幅下落と主要指数の調整入りで投資家心理は悪化。地政学リスク（イラン情勢、日本のFX準備金活用）を背景に金への資金流入が加速。暗号資産は弱含みだが、一部で実用化の動きも見られ完全な崩壊シナリオではない。短期的には安全資産優位が継続する見込み。"
+  },
+  "portfolios": {
+    "aggressive": {
+      "BTC": 40.0,
+      "NVDA": 35.0,
+      "Gold": 15.0
+    },
+    "balanced": {
+      "BTC": 25.0,
+      "NVDA": 30.0,
+      "Gold": 20.0
+    },
+    "safe": {
+      "BTC": 10.0,
+      "NVDA": 25.0,
+      "Gold": 30.0
+    }
+  }
+}

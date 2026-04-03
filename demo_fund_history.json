@@ -1,0 +1,89 @@
+{
+  "initial_capital": 10000000,
+  "current_value": 9444970,
+  "start_date": "2026-03-27",
+  "positions": {
+    "BTC": 25.0,
+    "NVDA": 30.0,
+    "Gold": 20.0
+  },
+  "history": [
+    {
+      "date": "2026-03-27",
+      "value": 10000000,
+      "day_return_pct": 0.0,
+      "total_return_pct": 0.0,
+      "positions": {},
+      "note": "デモファンド開始！元手¥10,000,000"
+    },
+    {
+      "date": "2026-03-27",
+      "value": 9713700,
+      "day_return_pct": -2.86,
+      "total_return_pct": -2.86,
+      "positions": [
+        {
+          "ticker": "BTC",
+          "weight": 25.0,
+          "change_24h": -3.42,
+          "contribution": -0.86,
+          "pnl_jpy": -85500
+        },
+        {
+          "ticker": "NVDA",
+          "weight": 30.0,
+          "change_24h": -4.16,
+          "contribution": -1.25,
+          "pnl_jpy": -124800
+        },
+        {
+          "ticker": "Gold",
+          "weight": 20.0,
+          "change_24h": -3.8,
+          "contribution": -0.76,
+          "pnl_jpy": -76000
+        }
+      ]
+    },
+    {
+      "date": "2026-03-27",
+      "value": 9444970,
+      "day_return_pct": -2.77,
+      "total_return_pct": -5.55,
+      "positions": [
+        {
+          "ticker": "BTC",
+          "weight": 25.0,
+          "change_24h": -3.49,
+          "contribution": -0.87,
+          "pnl_jpy": -84752
+        },
+        {
+          "ticker": "NVDA",
+          "weight": 30.0,
+          "change_24h": -4.16,
+          "contribution": -1.25,
+          "pnl_jpy": -121227
+        },
+        {
+          "ticker": "Gold",
+          "weight": 20.0,
+          "change_24h": -3.23,
+          "contribution": -0.65,
+          "pnl_jpy": -62751
+        }
+      ]
+    }
+  ],
+  "total_return_pct": -5.55,
+  "best_day": {
+    "date": "",
+    "return": 0
+  },
+  "worst_day": {
+    "date": "2026-03-27",
+    "return": -2.86
+  },
+  "win_days": 0,
+  "total_days": 2
+}

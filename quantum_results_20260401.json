@@ -1,0 +1,135 @@
+{
+  "timestamp": "2026/04/01 06:30 JST",
+  "device": "SV1シミュレーター",
+  "market_data": {
+    "fg": 11,
+    "top_scores": [
+      {
+        "name": "ARM",
+        "ticker": "ARM",
+        "score": 83,
+        "signal": "🔥 急上昇中",
+        "trend": "up",
+        "arrows": "▲▲▲",
+        "change_24h": 10.46,
+        "mom_20d": 21.9,
+        "mom_60d": 10.4
+      },
+      {
+        "name": "Gold",
+        "ticker": "GC=F",
+        "score": 62,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 3.84,
+        "mom_20d": -8.2,
+        "mom_60d": 9.3
+      },
+      {
+        "name": "TRX",
+        "ticker": "TRX-USD",
+        "score": 55,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": -1.88,
+        "mom_20d": 8.4,
+        "mom_60d": 9.4
+      },
+      {
+        "name": "AMD",
+        "ticker": "AMD",
+        "score": 45,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 3.77,
+        "mom_20d": 0.7,
+        "mom_60d": -9.0
+      },
+      {
+        "name": "TON",
+        "ticker": "TON-USD",
+        "score": 43,
+        "signal": "📉 下降気味",
+        "trend": "down",
+        "arrows": "▼",
+        "change_24h": -0.0,
+        "mom_20d": -7.9,
+        "mom_60d": -39.7
+      }
+    ]
+  },
+  "portfolio": {
+    "status": "classical_fallback",
+    "device": "Classical",
+    "selected_tickers": [
+      "ARM",
+      "Gold",
+      "TRX"
+    ],
+    "allocation": {
+      "ARM": 0.3333333333333333,
+      "Gold": 0.3333333333333333,
+      "TRX": 0.3333333333333333,
+      "AMD": 0,
+      "TON": 0,
+      "NVDA": 0,
+      "SPX": 0,
+      "ETH": 0
+    },
+    "confidence": null
+  },
+  "grover": {
+    "status": "grover_simulated",
+    "algorithm": "Grover's Algorithm",
+    "speedup": "O(√17) = O(4)",
+    "best_ticker": "ARM",
+    "best_score": 83,
+    "top3": [
+      {
+        "ticker": "ARM",
+        "score": 83
+      },
+      {
+        "ticker": "Gold",
+        "score": 62
+      },
+      {
+        "ticker": "TRX",
+        "score": 55
+      }
+    ],
+    "circuit_qubits": 5
+  },
+  "anomaly": {
+    "status": "completed",
+    "algorithm": "Quantum Entropy Analysis",
+    "entropy": 0.974,
+    "correlation": 0.434,
+    "avg_score": 37.6,
+    "fg_deviation": 0.0,
+    "anomaly_level": "LOW",
+    "anomalies": []
+  },
+  "strategy_optimization": {
+    "weights": {
+      "M1": 0.208,
+      "ME1": 0.163,
+      "ME3": 0.192,
+      "MT8": 0.207
+    },
+    "combined_sharpe": 1.02,
+    "method": "Classical fallback",
+    "strategies": [
+      "出来高×ブレイクアウト",
+      "アーニングスモメンタム",
+      "ML強化モメンタム(線形回帰)",
+      "ファクターモメンタム(Arnott2021)",
+      "アーニングスモメンタム"
+    ],
+    "error": "Validators defined with incorrect fields: validate_instructions (use check_fields=False if you're inheriting from the model and intended this)"
+  },
+  "cost_usd": 0.0
+}

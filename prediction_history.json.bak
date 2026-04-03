@@ -1,0 +1,32 @@
+{
+  "predictions": [
+    {
+      "date": "2026/03/26 21:30",
+      "predictions": {
+        "BTC": {
+          "range": "-3.5〜+1.2%",
+          "probability": 65
+        },
+        "Gold": {
+          "range": "-1.0〜+2.8%",
+          "probability": 58
+        }
+      },
+      "prices_at_prediction": {
+        "BTC": 69371.04,
+        "ETH": 2070.55,
+        "NVDA": 178.68,
+        "AAPL": 252.62,
+        "Gold": 4432.8,
+        "USDT": 1.0,
+        "日経225": 53603.65,
+        "S&P500": 6591.9
+      },
+      "verified": true,
+      "results": {
+        "BTC": {
+          "predicted_range": "-3.5〜+1.2%",
+          "predicted_probability": 65,
+          "actual_change": -4.84,
+          "direction_correct": true,
+          "in_range": 

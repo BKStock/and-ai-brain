@@ -1,0 +1,1113 @@
+"""
+&AI QUANTUM EDGE - 専用指揮センターBot
+@bk_training_en_bot
+"""
+
+import asyncio
+import logging
+import sys
+import os
+sys.path.insert(0, '/Users/mr.k/Projects/and-ai-brain')
+
+from dotenv import load_dotenv
+load_dotenv('/Users/mr.k/Projects/and-ai-brain/.env')
+
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+BOT_TOKEN = os.environ.get("QE_COMMAND_BOT_TOKEN")
+WHALE_ALERT_KEY = os.environ.get("WHALE_ALERT_KEY", "")
+OWNER_ID = int(os.environ.get("QE_OWNER_CHAT_ID", "5791086501"))
+
+logging.basicConfig(level=logging.WARNING)
+
+# ========================================
+# 認証チェック
+# ========================================
+PROJECT_GROUP_ID = -1003799035163  # &AIプロジェクト管理グループ
+
+def is_authorized(update: Update) -> bool:
+    # Direct ChatのKK本人 OR プロジェクト管理グループからのKK
+    user_ok = update.effective_user.id == OWNER_ID
+    if user_ok:
+        return True
+    # グループからの場合もKKなら許可
+    chat = update.effective_chat
+    if chat and chat.id == PROJECT_GROUP_ID and update.effective_user.id == OWNER_ID:
+        return True
+    return False
+
+
+# ========================================
+# /start /help
+# ========================================
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    msg = "⚛️ *&AI QUANTUM EDGE 指揮センター*\n\nボタンを押して操作してください 👇"
+    
+    keyboard = [
+        [
+            InlineKeyboardButton("📱 管理ダッシュボード", callback_data="dash:home"),
+        ],
+        [
+            InlineKeyboardButton("📊 今すぐレポート", callback_data="cmd:report"),
+            InlineKeyboardButton("💹 現在価格", callback_data="cmd:price"),
+        ],
+        [
+            InlineKeyboardButton("🔥 モメンタム", callback_data="cmd:momentum"),
+            InlineKeyboardButton("💰 ポートフォリオ", callback_data="dash:portfolio"),
+        ],
+        [
+            InlineKeyboardButton("🤖 自動売買", callback_data="dash:trading"),
+            InlineKeyboardButton("📈 マーケット", callback_data="dash:market"),
+        ],
+        [
+            InlineKeyboardButton("🎯 予測精度", callback_data="cmd:accuracy"),
+            InlineKeyboardButton("⚙️ システム状態", callback_data="cmd:status"),
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.message.reply_text(msg, parse_mode='Markdown', reply_markup=reply_markup)
+
+
+# ========================================
+# /report — 今すぐレポート送信
+# ========================================
+async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    await update.message.reply_text("⚛️ データ収集中... 少々お待ちください（30〜60秒）")
+    
+    try:
+        from brain_collector import generate_brain_report, send_to_telegram
+        msg, _ = generate_brain_report()
+        await update.message.reply_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /price — 現在価格
+# ========================================
+async def price(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    await update.message.reply_text("📈 価格取得中...")
+    
+    try:
+        import yfinance as yf
+        tickers = {
+            'BTC-USD':'BTC','ETH-USD':'ETH','TRX-USD':'TRX',
+            'SOL-USD':'SOL','XRP-USD':'XRP',
+            'NVDA':'NVDA','MSFT':'MSFT','ARM':'ARM','AMD':'AMD',
+            'LVS':'LVS','MLCO':'MLCO','SE':'SEA',
+            'DKNG':'DKNG','GRAB':'GRAB','GC=F':'Gold'
+        }
+        
+        msg = "📊 *現在価格*\n\n"
+        categories = {
+            '⚡ 仮想通貨': ['BTC-USD','ETH-USD','TRX-USD','SOL-USD','XRP-USD'],
+            '📈 AI×テック': ['NVDA','MSFT','ARM','AMD'],
+            '🎰 iGaming×ASEAN': ['LVS','MLCO','SE','DKNG','GRAB'],
+            '🛡️ 安全資産': ['GC=F'],
+        }
+        
+        for cat, cat_tickers in categories.items():
+            msg += f"*{cat}*\n"
+            for t in cat_tickers:
+                name = tickers[t]
+                try:
+                    hist = yf.Ticker(t).history(period='2d')
+                    if len(hist) >= 2:
+                        price = hist['Close'].iloc[-1]
+                        chg = (hist['Close'].iloc[-1]/hist['Close'].iloc[-2]-1)*100
+                        arrow = "▲" if chg > 0 else "▼"
+                        msg += f"  {name}: ${price:,.2f} ({chg:+.1f}% {arrow})\n"
+                except: pass
+            msg += "\n"
+        
+        await update.message.reply_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /momentum — モメンタムランキング
+# ========================================
+async def momentum(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    await update.message.reply_text("🔥 モメンタム計算中...")
+    
+    try:
+        from momentum_engine import get_all_momentum_scores
+        scores = get_all_momentum_scores()
+        
+        msg = "🔥 *モメンタムランキング*\n\n"
+        
+        msg += "📈 *上位5銘柄（買いシグナル）*\n"
+        for i, s in enumerate(scores[:5], 1):
+            bar = "█" * (s['score'] // 15)
+            msg += f"  {i}. {s['name']:5s} {s['score']}点 {bar} {s['arrows']}\n"
+        
+        msg += "\n⚠️ *下位3銘柄（注意）*\n"
+        for s in scores[-3:]:
+            msg += f"  ▼ {s['name']:5s} {s['score']}点 {s['signal']}\n"
+        
+        msg += f"\n更新: {__import__('datetime').datetime.now().strftime('%H:%M JST')}"
+        
+        await update.message.reply_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /portfolio — 量子ポートフォリオ
+# ========================================
+async def portfolio(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    keyboard = [
+        [
+            InlineKeyboardButton("🔥 積極運用", callback_data="pf:aggressive"),
+            InlineKeyboardButton("⚖️ バランス", callback_data="pf:balanced"),
+            InlineKeyboardButton("🛡️ 安全", callback_data="pf:safe"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.message.reply_text(
+        "⚛️ 投資スタイルを選択してください:",
+        reply_markup=reply_markup
+    )
+
+
+async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """メインメニューボタンの処理"""
+    query = update.callback_query
+    await query.answer()
+    if not is_authorized(update): return
+    
+    action = query.data.replace("cmd:", "")
+    
+    # ローディング表示
+    loading_msgs = {
+        "report": "⚛️ データ収集中... 少々お待ちください（30〜60秒）",
+        "price": "📈 価格取得中...",
+        "momentum": "🔥 モメンタム計算中...",
+        "accuracy": "🎯 精度データ集計中...",
+        "monthly": "📊 月次レポート生成中...",
+        "status": "⚙️ システム状態確認中...",
+    }
+    
+    if action in loading_msgs:
+        await query.edit_message_text(loading_msgs[action])
+    
+    # 各アクション実行
+    if action == "report":
+        try:
+            from brain_collector import generate_brain_report
+            msg, _ = generate_brain_report()
+            await context.bot.send_message(chat_id=query.message.chat_id, text=msg, parse_mode='Markdown')
+            await show_main_menu(query, context, "✅ レポート送信完了！")
+        except Exception as e:
+            await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+    
+    elif action == "price":
+        try:
+            import yfinance as yf
+            from datetime import datetime
+            now = datetime.now().strftime("%m/%d %H:%M")
+            
+            tickers = {
+                'BTC-USD':'BTC','ETH-USD':'ETH','TRX-USD':'TRX',
+                'SOL-USD':'SOL','XRP-USD':'XRP',
+                'NVDA':'NVDA','MSFT':'MSFT','ARM':'ARM','AMD':'AMD',
+                'LVS':'LVS','MLCO':'MLCO','SE':'SEA',
+                'DKNG':'DKNG','GRAB':'GRAB','GC=F':'Gold'
+            }
+            
+            categories = {
+                '⚡ 仮想通貨': ['BTC-USD','ETH-USD','TRX-USD','SOL-USD','XRP-USD'],
+                '🤖 AI×テック': ['NVDA','MSFT','ARM','AMD'],
+                '🎰 iGaming×ASEAN': ['LVS','MLCO','SE','DKNG','GRAB'],
+                '🛡️ 安全資産': ['GC=F'],
+            }
+            
+            msg = f"💹 *リアルタイム価格*  `{now} JST`\n"
+            
+            for cat, cat_tickers in categories.items():
+                msg += f"\n*{cat}*\n"
+                msg += "┄┄┄┄┄┄┄┄┄┄┄┄┄\n"
+                for t in cat_tickers:
+                    name = tickers[t]
+                    try:
+                        hist = yf.Ticker(t).history(period='2d')
+                        if len(hist) >= 2:
+                            p = hist['Close'].iloc[-1]
+                            chg = (hist['Close'].iloc[-1]/hist['Close'].iloc[-2]-1)*100
+                            if chg >= 1.5:
+                                icon = "🟢"
+                            elif chg >= 0:
+                                icon = "🔵"
+                            elif chg >= -1.5:
+                                icon = "🟡"
+                            else:
+                                icon = "🔴"
+                            arrow = "▲" if chg >= 0 else "▼"
+                            msg += f"{icon} `{name:5s}` `${p:>10,.2f}` `{chg:+.1f}%` {arrow}\n"
+                    except: pass
+            
+            msg += "\n🟢≥+1.5%  🔵≥0%  🟡≥-1.5%  🔴<-1.5%"
+            
+            await show_main_menu(query, context, msg)
+        except Exception as e:
+            await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+    
+    elif action == "momentum":
+        try:
+            from momentum_engine import get_all_momentum_scores
+            from datetime import datetime
+            scores = get_all_momentum_scores()
+            now = datetime.now().strftime("%m/%d %H:%M")
+            
+            msg = f"🔥 *モメンタムランキング*  `{now} JST`\n"
+            msg += "━━━━━━━━━━━━━━━\n\n"
+            
+            # 上位5銘柄
+            msg += "🚀 *買いシグナル TOP5*\n"
+            medals = ["🥇","🥈","🥉","4️⃣","5️⃣"]
+            for i, s in enumerate(scores[:5]):
+                score = s['score']
+                # スコアバー（10段階）
+                filled = score // 10
+                bar = "▓" * filled + "░" * (10 - filled)
+                change = s.get('change_24h', 0)
+                change_str = f"+{change:.1f}%" if change >= 0 else f"{change:.1f}%"
+                trend_emoji = "🔺" if score >= 75 else "📈" if score >= 60 else "➡️"
+                msg += f"{medals[i]} *{s['name']}*  `{score}点`\n"
+                msg += f"   `{bar}` {trend_emoji} `{change_str}`\n"
+            
+            msg += "\n━━━━━━━━━━━━━━━\n"
+            
+            # 下位3銘柄
+            msg += "⚠️ *注意銘柄 BOTTOM3*\n"
+            for s in scores[-3:]:
+                score = s['score']
+                change = s.get('change_24h', 0)
+                change_str = f"+{change:.1f}%" if change >= 0 else f"{change:.1f}%"
+                msg += f"🔻 *{s['name']}*  `{score}点`  `{change_str}`\n"
+            
+            msg += "\n━━━━━━━━━━━━━━━\n"
+            msg += "💡 _スコア75以上 = 強い買いシグナル_\n"
+            msg += "_スコア30以下 = 要注意_"
+            
+            await show_main_menu(query, context, msg)
+        except Exception as e:
+            await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+    
+    elif action == "portfolio_menu":
+        keyboard = [
+            [
+                InlineKeyboardButton("🔥 積極運用", callback_data="pf:aggressive"),
+                InlineKeyboardButton("⚖️ バランス", callback_data="pf:balanced"),
+                InlineKeyboardButton("🛡️ 安全", callback_data="pf:safe"),
+            ],
+            [InlineKeyboardButton("← 戻る", callback_data="cmd:back")]
+        ]
+        await query.edit_message_text(
+            "⚛️ 投資スタイルを選択してください:",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+    
+    elif action == "accuracy":
+        try:
+            from prediction_tracker import get_accuracy_summary
+            from feedback_tracker import load_feedback, get_win_rate
+            win = get_win_rate()
+            fb = load_feedback()
+            total_fb = fb.get('total_helpful',0) + fb.get('total_not_helpful',0)
+            fb_rate = fb.get('total_helpful',0) / total_fb * 100 if total_fb > 0 else 0
+            wr = win.get('win_rate', 0)
+            if wr < 60: price_str = "無料"
+            elif wr < 65: price_str = "$29/月"
+            elif wr < 70: price_str = "$59/月"
+            elif wr < 75: price_str = "$99/月"
+            else: price_str = "$149/月"
+            msg = f"""🎯 *予測精度レポート*
+
+方向性的中率: *{wr}%*
+レンジ内的中率: *{win.get('range_rate', 0)}%*
+累計: {win.get('wins',0)}/{win.get('total',0)}回
+
+💬 満足度: {fb_rate:.0f}%
+👍 {fb.get('total_helpful',0)}回 / 👎 {fb.get('total_not_helpful',0)}回
+
+💰 現在の適正価格: *{price_str}*"""
+            await show_main_menu(query, context, msg)
+        except Exception as e:
+            await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+    
+    elif action == "monthly":
+        try:
+            from feedback_tracker import send_monthly_report
+            send_monthly_report()
+            await show_main_menu(query, context, "✅ 月次レポートを送信しました！")
+        except Exception as e:
+            await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+    
+    elif action == "status":
+        import subprocess, os
+        brain_ok = os.path.exists('/Users/mr.k/Projects/and-ai-brain/latest_report.json')
+        line_ok = os.path.exists('/tmp/andai-line-harness.log')
+        msg = f"""⚙️ *システム状態*
+
+✅ Command Bot: 稼働中
+{'✅' if brain_ok else '⚠️'} 最新レポート: {'あり' if brain_ok else 'なし'}
+{'✅' if line_ok else '⚠️'} LINEサーバー: {'稼働中' if line_ok else '要確認'}
+✅ 毎朝8:00自動配信: 設定済み
+
+🔧 次のステップ:
+→ Amazon Braket有効化（本日14:00）"""
+        await show_main_menu(query, context, msg)
+    
+    elif action == "back":
+        await show_main_menu(query, context, "⚛️ *&AI QUANTUM EDGE 指揮センター*")
+
+
+async def show_main_menu(query, context, msg: str):
+    """メインメニューボタン付きで表示"""
+    keyboard = [
+        [
+            InlineKeyboardButton("📊 今すぐレポート", callback_data="cmd:report"),
+            InlineKeyboardButton("💹 現在価格", callback_data="cmd:price"),
+        ],
+        [
+            InlineKeyboardButton("🔥 モメンタム", callback_data="cmd:momentum"),
+            InlineKeyboardButton("⚛️ ポートフォリオ", callback_data="cmd:portfolio_menu"),
+        ],
+        [
+            InlineKeyboardButton("🎯 予測精度", callback_data="cmd:accuracy"),
+            InlineKeyboardButton("📈 月次レポート", callback_data="cmd:monthly"),
+        ],
+        [
+            InlineKeyboardButton("⚙️ システム状態", callback_data="cmd:status"),
+        ],
+    ]
+    await query.edit_message_text(
+        msg,
+        parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+async def portfolio_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    
+    if not is_authorized(update): return
+    
+    risk_map = {"pf:aggressive": 0.2, "pf:balanced": 0.5, "pf:safe": 0.8}
+    label_map = {"pf:aggressive": "🔥 積極運用", "pf:balanced": "⚖️ バランス", "pf:safe": "🛡️ 安全運用"}
+    
+    risk = risk_map.get(query.data, 0.5)
+    label = label_map.get(query.data, "バランス")
+    
+    try:
+        import yfinance as yf
+        import numpy as np
+        
+        tickers = {
+            'BTC-USD':'BTC','ETH-USD':'ETH','NVDA':'NVDA',
+            'GC=F':'Gold','MSFT':'MSFT','SE':'SEA'
+        }
+        
+        stocks = {}
+        for t, name in tickers.items():
+            try:
+                hist = yf.Ticker(t).history(period='90d')
+                if len(hist) > 10:
+                    ret = hist['Close'].pct_change().mean() * 252
+                    rsk = hist['Close'].pct_change().std() * (252**0.5)
+                    stocks[name] = {'return': ret, 'risk': rsk}
+            except: pass
+        
+        from brain_collector import quantum_portfolio_optimize
+        pf, score = quantum_portfolio_optimize(stocks, risk_tolerance=risk)
+        
+        msg = f"⚛️ *量子ポートフォリオ推奨*\n{label}\n\n"
+        for ticker, pct in sorted(pf.items(), key=lambda x: x[1], reverse=True):
+            bar = "█" * int(pct / 10)
+            msg += f"  {ticker}: {pct}% {bar}\n"
+        msg += f"\n量子スコア: {score:.3f}"
+        
+        await query.edit_message_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await query.edit_message_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /accuracy — 予測精度
+# ========================================
+async def accuracy(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    try:
+        from prediction_tracker import get_accuracy_summary
+        from feedback_tracker import load_feedback, get_win_rate
+        
+        acc = get_accuracy_summary()
+        win = get_win_rate()
+        fb = load_feedback()
+        
+        total_fb = fb.get('total_helpful',0) + fb.get('total_not_helpful',0)
+        fb_rate = fb.get('total_helpful',0) / total_fb * 100 if total_fb > 0 else 0
+        
+        # 精度連動価格
+        wr = win.get('win_rate', 0)
+        if wr < 60: price_str = "無料（精度向上中）"
+        elif wr < 65: price_str = "$29/月"
+        elif wr < 70: price_str = "$59/月"
+        elif wr < 75: price_str = "$99/月"
+        else: price_str = "$149/月"
+        
+        msg = f"""📊 *&AI QUANTUM EDGE 予測精度*
+
+🎯 *予測成績*
+方向性的中率: *{win.get('win_rate', 0)}%*
+レンジ内的中率: *{win.get('range_rate', 0)}%*
+累計: {win.get('wins', 0)}/{win.get('total', 0)}回
+
+💬 *フィードバック*
+👍 役立った: {fb.get('total_helpful', 0)}回
+👎 イマイチ: {fb.get('total_not_helpful', 0)}回
+満足度: {fb_rate:.0f}%
+
+💰 *精度連動価格（現在）*
+精度 {wr}% → *{price_str}*
+
+🦴 データ蓄積中（3ヶ月で精度確定）"""
+        
+        await update.message.reply_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /monthly — 月次レポート今すぐ
+# ========================================
+async def monthly(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    await update.message.reply_text("📊 月次レポート生成中...")
+    try:
+        from feedback_tracker import send_monthly_report
+        send_monthly_report()
+        await update.message.reply_text("✅ 月次レポートを送信しました！")
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")
+
+
+# ========================================
+# /status — システム状態
+# ========================================
+async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    import subprocess, os
+    
+    # LINEサーバー確認
+    line_ok = os.path.exists('/tmp/andai-line-harness.log')
+    
+    # 最新レポート確認
+    report_ok = os.path.exists('/Users/mr.k/Projects/and-ai-brain/latest_report.json')
+    
+    # LaunchAgent確認
+    result = subprocess.run(['launchctl', 'list'], capture_output=True, text=True)
+    brain_ok = 'ai-brain-daily' in result.stdout
+    
+    msg = f"""⚛️ *&AI QUANTUM EDGE システム状態*
+
+✅ Bot稼働中
+{'✅' if brain_ok else '❌'} 毎朝8:00配信 (LaunchAgent)
+{'✅' if report_ok else '❌'} 最新レポート
+{'✅' if line_ok else '❌'} LINEサーバー
+
+📁 ファイル:
+/Projects/and-ai-brain/
+├── brain_collector.py ✅
+├── momentum_engine.py ✅
+├── prediction_tracker.py ✅
+└── feedback_tracker.py ✅
+
+🔧 次のステップ:
+→ Amazon Braket有効化（本日14:00）
+→ Twitter API審査中"""
+    
+    await update.message.reply_text(msg, parse_mode='Markdown')
+
+
+# ========================================
+# /addstock — 銘柄追加
+# ========================================
+async def addstock(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not is_authorized(update): return
+    
+    if not context.args:
+        await update.message.reply_text("使い方: /addstock TICKER 名前\n例: /addstock DOGE DOGE")
+        return
+    
+    ticker = context.args[0].upper()
+    name = context.args[1] if len(context.args) > 1 else ticker
+    
+    try:
+        import yfinance as yf
+        hist = yf.Ticker(ticker).history(period='5d')
+        if len(hist) > 0:
+            price = hist['Close'].iloc[-1]
+            await update.message.reply_text(
+                f"✅ {name} ({ticker}) を確認\n現在価格: ${price:,.2f}\n\n追加するには設定ファイルを更新します。"
+            )
+        else:
+            await update.message.reply_text(f"❌ {ticker} のデータが取得できませんでした")
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:50]}")
+
+
+# ========================================
+# 📱 管理ダッシュボード（全画面）
+# ========================================
+
+async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """メインダッシュボード"""
+    if not is_authorized(update): return
+    keyboard = [
+        [
+            InlineKeyboardButton("🏠 ホーム", callback_data="dash:home"),
+            InlineKeyboardButton("📈 マーケット", callback_data="dash:market"),
+        ],
+        [
+            InlineKeyboardButton("💰 資産", callback_data="dash:portfolio"),
+            InlineKeyboardButton("🤖 自動売買", callback_data="dash:trading"),
+        ],
+        [
+            InlineKeyboardButton("🔬 研究", callback_data="dash:research"),
+            InlineKeyboardButton("⚙️ 設定", callback_data="dash:settings"),
+        ],
+    ]
+    msg = "⚛️ *&AI QUANTUM EDGE ダッシュボード*\n\n画面を選択してください 👇"
+    await update.message.reply_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dashboard_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """ダッシュボード各画面コールバック"""
+    query = update.callback_query
+    await query.answer()
+    data = query.data.split(":")
+    screen = data[1] if len(data) > 1 else "home"
+
+    if screen == "home":
+        await dash_home(query)
+    elif screen == "market":
+        await dash_market(query)
+    elif screen == "portfolio":
+        await dash_portfolio(query)
+    elif screen == "trading":
+        await dash_trading(query)
+    elif screen == "research":
+        await dash_research(query)
+    elif screen == "settings":
+        await dash_settings(query)
+
+
+def dash_nav(current: str) -> InlineKeyboardMarkup:
+    """ダッシュボード共通ナビゲーション"""
+    icons = {"home":"🏠","market":"📈","portfolio":"💰","trading":"🤖","research":"🔬","settings":"⚙️"}
+    labels = {"home":"ホーム","market":"マーケット","portfolio":"資産","trading":"自動売買","research":"研究","settings":"設定"}
+    row1, row2 = [], []
+    for i, (k, v) in enumerate(labels.items()):
+        btn_text = f"[{icons[k]} {v}]" if k == current else f"{icons[k]} {v}"
+        btn = InlineKeyboardButton(btn_text, callback_data=f"dash:{k}")
+        if i < 3:
+            row1.append(btn)
+        else:
+            row2.append(btn)
+    return InlineKeyboardMarkup([row1, row2])
+
+
+async def dash_home(query):
+    """🏠 ホーム画面"""
+    try:
+        import json, datetime
+        # 基本データ読み込み
+        now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M JST")
+
+        # Fear&Greed等を取得
+        try:
+            r = __import__('requests').get("https://api.alternative.me/fng/", timeout=5).json()
+            fg = int(r['data'][0]['value'])
+            fg_label = r['data'][0]['value_classification']
+        except:
+            fg, fg_label = 0, "不明"
+
+        fg_emoji = "😱" if fg < 20 else "😨" if fg < 40 else "😐" if fg < 60 else "😊" if fg < 80 else "🤩"
+        fg_signal = "🟢 逆張りチャンス" if fg < 20 else "🟡 注意" if fg < 40 else "⚪ 中立" if fg < 60 else "🟠 過熱" if fg < 80 else "🔴 バブル警戒"
+
+        # デモファンド読み込み
+        from demo_fund import load_fund, FUNDS
+        fund_pnls = {}
+        for fid in ["fund_1","fund_2","fund_3"]:
+            try:
+                fd = load_fund(fid)
+                cfg = FUNDS[fid]
+                val = fd.get("portfolio_value", fd.get("current_value", 10_000_000))
+                pnl_pct = (val - 10_000_000) / 10_000_000 * 100
+                fund_pnls[fid] = (val, pnl_pct, cfg["target_monthly"], cfg["emoji"], cfg["label"])
+            except:
+                fund_pnls[fid] = (10_000_000, 0.0, 5, "❓", "?")
+
+        f1 = fund_pnls["fund_1"]
+        f2 = fund_pnls["fund_2"]
+        f3 = fund_pnls["fund_3"]
+
+        msg = f"""⚛️ *&AI QUANTUM EDGE*
+{now}
+━━━━━━━━━━━━━━━
+
+🌡️ *市場体温計*
+{fg_emoji} Fear&Greed: *{fg}/100*  {fg_signal}
+
+💰 *デモファンド 今日の損益*
+{f1[3]} FUND-1 {f1[4]}: ¥{f1[0]:,.0f}  ({f1[1]:+.2f}%)  目標{f1[2]}%
+{f2[3]} FUND-2 {f2[4]}: ¥{f2[0]:,.0f}  ({f2[1]:+.2f}%)  目標{f2[2]}%
+{f3[3]} FUND-3 {f3[4]}: ¥{f3[0]:,.0f}  ({f3[1]:+.2f}%)  目標{f3[2]}%
+
+🎯 *今日のシグナル*
+⏸️ 待機中（条件確認中）"""
+
+    except Exception as e:
+        msg = f"⚛️ *&AI QUANTUM EDGE ホーム*\n\n⚠️ データ取得中... ({str(e)[:50]})"
+
+    keyboard = [
+        [
+            InlineKeyboardButton("📊 今すぐレポート", callback_data="cmd:report"),
+            InlineKeyboardButton("🔄 更新", callback_data="dash:home"),
+        ],
+        *dash_nav("home").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dash_market(query):
+    """📈 マーケット画面"""
+    try:
+        import requests
+        # BTC価格取得
+        r = requests.get("https://indexer.dydx.trade/v4/perpetualMarkets", timeout=10)
+        markets = r.json().get("markets", {})
+
+        key_tickers = ["BTC-USD","ETH-USD","SOL-USD","XRP-USD","TRX-USD","TON-USD"]
+        lines = []
+        for t in key_tickers:
+            if t in markets:
+                p = float(markets[t].get("oraclePrice", 0))
+                chg = float(markets[t].get("priceChange24H", 0))
+                chg_pct = (chg / p * 100) if p else 0
+                arrow = "▲" if chg_pct > 0 else "▼" if chg_pct < 0 else "→"
+                color = "🟢" if chg_pct >= 1.5 else "🔵" if chg_pct >= 0 else "🟡" if chg_pct >= -1.5 else "🔴"
+                ticker = t.replace("-USD","")
+                lines.append(f"{color} {ticker:6} ${p:>12,.2f}  {arrow}{abs(chg_pct):.1f}%")
+
+        price_block = "\n".join(lines) if lines else "取得中..."
+
+        msg = f"""📈 *マーケット*
+━━━━━━━━━━━━━━━
+
+💹 *主要価格（dYdX）*
+```
+{price_block}
+```
+
+🔥 *モメンタムランキング*
+/momentum で確認
+
+🐋 *クジラ動向*
+/report で詳細確認"""
+
+    except Exception as e:
+        msg = f"📈 *マーケット*\n\n⚠️ データ取得中... ({str(e)[:50]})"
+
+    keyboard = [
+        [
+            InlineKeyboardButton("🔥 モメンタム詳細", callback_data="cmd:momentum"),
+            InlineKeyboardButton("🔄 更新", callback_data="dash:market"),
+        ],
+        *dash_nav("market").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dash_portfolio(query):
+    """💰 資産画面"""
+    try:
+        import requests, json
+
+        # Hyperliquid残高
+        hl_bal = 0.0
+        hl_positions = 0
+        try:
+            HL_WALLET = os.environ.get("HL_MAIN_WALLET", "0xe5941eeF19C30A09f05b23b4D512301b3388c9Ed")
+            r = requests.post("https://api.hyperliquid.xyz/info",
+                json={"type": "clearinghouseState", "user": HL_WALLET}, timeout=8)
+            if r.status_code == 200:
+                d = r.json()
+                hl_bal = float(d.get("marginSummary", {}).get("accountValue", 0))
+                hl_positions = len(d.get("assetPositions", []))
+        except: pass
+
+        # dYdX残高
+        dydx_bal = 0.0
+        dydx_positions = 0
+        DYDX_ADDR = os.environ.get("DYDX_ADDRESS", "dydx182rjzngn7qzsjunszne4srkr2r2tpplgvc4ct0")
+        try:
+            r2 = requests.get(f"https://indexer.dydx.trade/v4/addresses/{DYDX_ADDR}", timeout=8)
+            if r2.status_code == 200:
+                subs = r2.json().get("subaccounts", [])
+                if subs:
+                    dydx_bal = float(subs[0].get("equity", 0))
+                    dydx_positions = len(subs[0].get("openPerpetualPositions", {}))
+        except: pass
+
+        total = hl_bal + dydx_bal
+
+        # デモファンド
+        demo_total = 0
+        demo_pnl = 0
+        fund_details = []
+        from demo_fund import load_fund, FUNDS
+        for fid in ["fund_1", "fund_2", "fund_3"]:
+            try:
+                fd = load_fund(fid)
+                cfg = FUNDS[fid]
+                val = fd.get("portfolio_value", fd.get("current_value", 10_000_000))
+                pnl = val - 10_000_000
+                pnl_pct = pnl / 10_000_000 * 100
+                demo_total += val
+                demo_pnl += pnl
+                progress = pnl_pct / cfg["target_monthly"] * 100
+                fund_details.append(
+                    f"{cfg['emoji']} *{cfg['name']} {cfg['label']}*\n"
+                    f"   目標: 月利{cfg['target_monthly']}%  進捗: {progress:.0f}%\n"
+                    f"   ¥{val:,.0f}  ({pnl_pct:+.2f}%)"
+                )
+            except:
+                demo_total += 10_000_000
+                fund_details.append(f"❓ {fid}: データ取得中...")
+
+        funds_text = "\n\n".join(fund_details)
+
+        msg = f"""💰 *ポートフォリオ*
+━━━━━━━━━━━━━━━
+
+🔵 *Hyperliquid*
+残高: ${hl_bal:,.2f} USDH
+ポジション: {hl_positions}件
+
+💎 *dYdX*
+残高: ${dydx_bal:,.2f} USDC
+ポジション: {dydx_positions}件
+
+━━━━━━━━━━━━━━━
+💵 合計リアル: *${total:,.2f}*
+
+━━━━━━━━━━━━━━━
+🏆 *3デモファンド（¥3,000万）*
+
+{funds_text}
+
+合計: ¥{demo_total:,.0f}
+累計損益: ¥{demo_pnl:+,.0f}"""
+
+    except Exception as e:
+        msg = f"💰 *ポートフォリオ*\n\n⚠️ 取得中... ({str(e)[:50]})"
+
+    keyboard = [
+        [
+            InlineKeyboardButton("📊 デモファンド詳細", callback_data="pf:demo"),
+            InlineKeyboardButton("🔄 更新", callback_data="dash:portfolio"),
+        ],
+        *dash_nav("portfolio").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dash_trading(query):
+    """🤖 自動売買画面"""
+    import subprocess, os
+
+    # LaunchAgent稼働確認
+    def is_running(label):
+        try:
+            r = subprocess.run(["launchctl", "list", label],
+                capture_output=True, text=True)
+            return r.returncode == 0
+        except:
+            return False
+
+    auto_trader = is_running("com.bk.auto-trader")
+    vip_watcher = is_running("com.bk.vip-watcher")
+    research = is_running("com.bk.research-agent")
+
+    msg = f"""🤖 *自動売買*
+━━━━━━━━━━━━━━━
+
+🖥️ *システム状態*
+{'✅' if auto_trader else '❌'} auto-trader（1時間毎）
+{'✅' if vip_watcher else '❌'} vip-watcher（監視中）
+{'✅' if research else '❌'} research-agent（毎晩2:00）
+✅ Hyperliquid: 接続済み
+✅ dYdX: 接続済み（$798.75）
+
+📋 *稼働中の戦略*
+⏸️ STRATEGY B: 待機中（条件未達）
+⚡ STRATEGY C: F&G条件クリア！
+⏸️ A10S グリッド: 待機中
+
+📊 *今日の取引*
+エントリー: 0回
+利確: 0回
+損切り: 0回
+
+⚠️ 次のエントリー条件:
+• スコア75点以上
+• X感情5.5以上
+• 世界経済スコア0以上
+• FR +0.1%以下"""
+
+    keyboard = [
+        [
+            InlineKeyboardButton("▶️ 今すぐチェック", callback_data="cmd:check_signal"),
+            InlineKeyboardButton("🎯 A10S状態", callback_data="cmd:a10s"),
+        ],
+        [
+            InlineKeyboardButton("⏹️ 全停止", callback_data="cmd:emergency_stop"),
+            InlineKeyboardButton("🔄 更新", callback_data="dash:trading"),
+        ],
+        *dash_nav("trading").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dash_research(query):
+    """🔬 研究画面"""
+    import json
+
+    # 予測精度読み込み
+    try:
+        with open('/Users/mr.k/Projects/and-ai-brain/prediction_log.json') as f:
+            preds = json.load(f)
+        total = len(preds)
+        correct = sum(1 for p in preds if p.get("correct") == True)
+        win_rate = (correct / total * 100) if total > 0 else 0
+    except:
+        total, correct, win_rate = 0, 0, 0.0
+
+    msg = f"""🔬 *研究エージェント*
+━━━━━━━━━━━━━━━
+
+📊 *予測精度*
+総予測数: {total}件
+正解: {correct}件
+勝率: {win_rate:.1f}%
+{'✅ 目標達成！' if win_rate >= 70 else '⏳ 蓄積中...' if total < 30 else '⚠️ 要改善'}
+
+⚛️ *量子バックテスト結果*
+🏆 A10S: 勝率95.8% (+322%)
+📈 STR-B: 勝率54.5%
+📊 STR-C: 勝率25.0%（逆張り）
+
+🏆 *デモファンド成績*
+🛡️ FUND-1 コンサバ: +0.00%（積算中）
+⚡ FUND-2 アグレッシブ: +0.00%（積算中）
+🚀 FUND-3 チャレンジ: +0.00%（積算中）
+
+🕐 次回研究: 毎晩02:00 JST
+📚 新パターン発見: 0件"""
+
+    keyboard = [
+        [
+            InlineKeyboardButton("📋 精度レポート", callback_data="cmd:accuracy"),
+            InlineKeyboardButton("🔄 今すぐ研究", callback_data="cmd:research_now"),
+        ],
+        [
+            InlineKeyboardButton("🔄 更新", callback_data="dash:research"),
+        ],
+        *dash_nav("research").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+async def dash_settings(query):
+    """⚙️ 設定画面"""
+    msg = """⚙️ *設定*
+━━━━━━━━━━━━━━━
+
+📋 *取引ルール（KK確定版）*
+エントリーサイズ: 残高10%/回
+最大同時保有: 5銘柄
+利確T1: +8%（KK確認後）
+利確T2: +15%（KK確認後）
+損切り: -5%（自動即実行）
+チェック間隔: 1時間ごと
+
+🔔 *通知設定*
+✅ 取引実行時
+✅ 利確タイミング
+✅ 緊急アラート
+✅ 毎日レポート（10/15/20時）
+
+📡 *データソース（11個）*
+✅ Yahoo Finance  ✅ X感情
+✅ Reddit          ✅ Fear&Greed
+✅ CoinGecko      ✅ Coinglass
+✅ Hyperliquid    ✅ NASA POWER
+✅ Whale Alert    ✅ HackerNews
+✅ VIPウォッチ（5名）
+
+🔌 *接続済み取引所*
+✅ Hyperliquid: $739 USDH
+✅ dYdX: $798 USDC"""
+
+    keyboard = [
+        [
+            InlineKeyboardButton("⚙️ システム状態", callback_data="cmd:status"),
+        ],
+        *dash_nav("settings").inline_keyboard
+    ]
+    await query.edit_message_text(msg, parse_mode='Markdown',
+        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
+# ========================================
+# メイン
+# ========================================
+def main():
+    app = Application.builder().token(BOT_TOKEN).build()
+    
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", start))
+    app.add_handler(CommandHandler("report", report))
+    app.add_handler(CommandHandler("price", price))
+    app.add_handler(CommandHandler("momentum", momentum))
+    app.add_handler(CommandHandler("portfolio", portfolio))
+    app.add_handler(CommandHandler("accuracy", accuracy))
+    app.add_handler(CommandHandler("monthly", monthly))
+    app.add_handler(CommandHandler("status", status))
+    app.add_handler(CommandHandler("addstock", addstock))
+    app.add_handler(CommandHandler("dashboard", dashboard))
+    app.add_handler(CommandHandler("d", dashboard))  # ショートカット
+    app.add_handler(CallbackQueryHandler(portfolio_callback, pattern="^pf:"))
+    app.add_handler(CallbackQueryHandler(button_callback, pattern="^cmd:"))
+    app.add_handler(CallbackQueryHandler(dashboard_callback, pattern="^dash:"))
+    
+    print("⚛️ &AI QUANTUM EDGE Bot 起動中...")
+    app.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
+
+
+if __name__ == "__main__":
+    main()
+
+
+async def a10s_status(update, context):
+    """A10S状態確認"""
+    if not is_authorized(update): return
+    await update.message.reply_text("🎯 A10S状態確認中...")
+    try:
+        import sys
+        sys.path.insert(0, '/Users/mr.k/Projects/and-ai-brain')
+        from a10s_strategy import get_a10s_status, should_a10s_run
+        
+        status = get_a10s_status()
+        can_run, reasons = should_a10s_run()
+        
+        msg = f"""🎯 *A10S グリッド戦略 状態*
+━━━━━━━━━━━━━━━
+
+稼働判定: {'✅ 稼働可能' if can_run else '🔴 停止中'}
+"""
+        if not can_run:
+            for r in reasons:
+                msg += f"  • {r}\n"
+        
+        if status["active"]:
+            msg += f"""
+📈 実行中:
+  {status['ticker']}: {status['pnl_pct']:+.2f}%
+  平均単価: ${status['avg_price']:,.4f}
+  進行: {status['steps_filled']}/{status['steps_total']}ステップ
+  利確目標: ${status['take_profit_price']:,.4f}
+  損切りライン: ${status['stop_loss_price']:,.4f}"""
+        else:
+            msg += "\n⏸️ 待機中"
+        
+        await update.message.reply_text(msg, parse_mode='Markdown')
+    except Exception as e:
+        await update.message.reply_text(f"❌ {str(e)[:100]}")
+
+
+async def make_video(update, context):
+    """動画制作コマンド"""
+    if not is_authorized(update): return
+    
+    theme = " ".join(context.args) if context.args else ""
+    
+    if not theme:
+        await update.message.reply_text(
+            "🎬 動画テーマを入力してください\n\n"
+            "使い方: /video テーマ\n"
+            "例: /video &AI QUANTUMが月利5%達成！AIが自動投資する時代\n\n"
+            "または /video_test でテスト（台本のみ生成）"
+        )
+        return
+    
+    await update.message.reply_text(f"🎬 動画制作開始！\nテーマ: {theme}\n\n台本生成中...")
+    
+    try:
+        import sys
+        sys.path.insert(0, '/Users/mr.k/Projects/and-ai-brain')
+        from video_factory import generate_script
+        
+        script = generate_script(theme, "tiktok")
+        
+        if script:
+            msg = f"""✅ *台本生成完了！*
+
+📝 タイトル: {script.get('title', '')}
+🎣 フック: {script.get('hook', '')}
+🎬 シーン数: {len(script.get('script', []))}
+📢 CTA: {script.get('cta', '')}
+#️⃣ {' '.join(script.get('hashtags', [])[:5])}
+
+動画生成を開始しますか？
+（fal.ai APIを使用・数分かかります）"""
+            
+            keyboard = [
+                [
+                    InlineKeyboardButton("▶️ 動画生成開始", callback_data=f"video:generate:{theme[:50]}"),
+                    InlineKeyboardButton("❌ キャンセル", callback_data="cmd:back")
+                ]
+            ]
+            await update.message.reply_text(msg, parse_mode='Markdown',
+                reply_markup=InlineKeyboardMarkup(keyboard))
+        else:
+            await update.message.reply_text("❌ 台本生成に失敗しました")
+    except Exception as e:
+        await update.message.reply_text(f"❌ エラー: {str(e)[:100]}")

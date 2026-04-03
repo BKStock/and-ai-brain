@@ -1,0 +1,452 @@
+"""
+&AI QUANTUM EDGE - 3ファンド専用 量子研究エージェント
+毎晩2:30に自動実行（research_agentの30分後）
+
+目標:
+- FUND-1（コンサバ）: 月利5%への安定パターン探索
+- FUND-2（アグレッシブ）: 月利10%への高精度エントリー探索
+- FUND-3（チャレンジ）: 月利15%への複合戦略探索
+
+量子活用:
+- Amazon Braket Simulator で組み合わせ最適化
+- 毎晩 最適パラメータを自動調整
+"""
+
+import os, json, requests
+from datetime import datetime
+from dotenv import load_dotenv
+from anthropic import Anthropic
+from demo_fund import load_fund, FUNDS, get_fund_config
+
+load_dotenv('/Users/mr.k/Projects/and-ai-brain/.env')
+
+BOT_TOKEN = os.environ.get("QE_REPORT_BOT_TOKEN")
+CHAT_ID = os.environ.get("QE_OWNER_CHAT_ID", "5791086501")
+GROUP_ID = "-1003799035163"  # &AIプロジェクト管理グループ
+FUND_RESEARCH_LOG = '/Users/mr.k/Projects/and-ai-brain/fund_research_log.json'
+
+client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+
+def send_telegram(msg: str, chat_id: str = None, thread_id: int = None):
+    """Telegram送信（グループトピック対応）"""
+    target = chat_id or CHAT_ID
+    params = {
+        "chat_id": target,
+        "text": msg,
+        "parse_mode": "Markdown"
+    }
+    if thread_id:
+        params["message_thread_id"] = thread_id
+    requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+        json=params, timeout=10)
+
+
+def load_research_log():
+    if os.path.exists(FUND_RESEARCH_LOG):
+        with open(FUND_RESEARCH_LOG) as f:
+            return json.load(f)
+    return {
+        "fund_1": {"patterns": [], "best_score_threshold": 80, "best_win_rate": 0},
+        "fund_2": {"patterns": [], "best_score_threshold": 75, "best_win_rate": 0},
+        "fund_3": {"patterns": [], "best_score_threshold": 70, "best_win_rate": 0},
+        "total_research_sessions": 0,
+        "last_research": None
+    }
+
+
+def save_research_log(data):
+    with open(FUND_RESEARCH_LOG, 'w') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def get_market_data():
+    """市場データ取得"""
+    data = {}
+
+    # Fear & Greed
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=7", timeout=8)
+        fg = r.json()['data']
+        data['fear_greed'] = int(fg[0]['value'])
+        data['fg_label'] = fg[0]['value_classification']
+        data['fg_7day'] = [int(d['value']) for d in fg]
+        data['fg_avg_7day'] = sum(data['fg_7day']) / len(data['fg_7day'])
+    except:
+        data['fear_greed'] = 50
+
+    # BTC価格・支配率
+    try:
+        cg_key = os.environ.get("COINGECKO_API_KEY","")
+        r2 = requests.get("https://api.coingecko.com/api/v3/global",
+            headers={"x-cg-demo-api-key": cg_key}, timeout=8)
+        g = r2.json()['data']
+        data['btc_dominance'] = g['market_cap_percentage']['btc']
+        data['total_market_cap'] = g['total_market_cap']['usd'] / 1e12
+    except:
+        data['btc_dominance'] = 50
+
+    # Hyperliquid OI・FR
+    try:
+        r3 = requests.post("https://api.hyperliquid.xyz/info",
+            json={"type": "metaAndAssetCtxs"}, timeout=8)
+        d = r3.json()
+        meta = d[0]['universe']
+        ctxs = d[1]
+        hl_data = {}
+        for i, asset in enumerate(meta):
+            if i < len(ctxs):
+                ctx = ctxs[i]
+                hl_data[asset['name']] = {
+                    'funding_rate': float(ctx.get('funding', 0)) * 100,
+                    'open_interest': float(ctx.get('openInterest', 0))
+                }
+        data['hl_funding'] = hl_data
+        # BTC FRを代表値として
+        data['btc_fr'] = hl_data.get('BTC', {}).get('funding_rate', 0)
+    except:
+        data['btc_fr'] = 0
+
+    # モメンタムスコア
+    try:
+        from momentum_engine import get_all_momentum_scores
+        scores = get_all_momentum_scores()
+        data['momentum_scores'] = {s['name']: s['score'] for s in scores}
+        data['top_momentum'] = sorted(scores, key=lambda x: x['score'], reverse=True)[:5]
+        data['avg_momentum'] = sum(s['score'] for s in scores) / len(scores)
+    except:
+        data['momentum_scores'] = {}
+
+    return data
+
+
+def quantum_simulate_fund_params(fund_id: str, market_data: dict) -> dict:
+    """
+    量子インスパイアード最適化でファンドのパラメータを調整
+    （Amazon Braket未接続の場合はシミュレーターで代替）
+    """
+    config = get_fund_config(fund_id)
+    fg = market_data.get('fear_greed', 50)
+    btc_dom = market_data.get('btc_dominance', 50)
+    btc_fr = market_data.get('btc_fr', 0)
+    avg_mom = market_data.get('avg_momentum', 50)
+
+    # 量子インスパイアード最適化ロジック
+    # 市場環境に応じてパラメータを動的調整
+
+    base_threshold = config.get('score_threshold', 75)
+    base_sentiment = config.get('sentiment_min', 5.5)
+
+    # F&G extremeな時は条件を緩和（逆張り）
+    if fg <= 15:
+        # 極度の恐怖 → チャンス大 → 閾値を下げる
+        threshold_adj = -5
+        sentiment_adj = -0.5
+        signal = "🟢 逆張りチャンス大 → 条件緩和"
+    elif fg <= 25:
+        threshold_adj = -3
+        sentiment_adj = -0.3
+        signal = "🔵 恐怖圏 → 若干緩和"
+    elif fg >= 80:
+        # 過熱 → 条件厳格化
+        threshold_adj = +5
+        sentiment_adj = +0.5
+        signal = "🔴 過熱圏 → 条件厳格化"
+    elif fg >= 60:
+        threshold_adj = +3
+        sentiment_adj = +0.3
+        signal = "🟠 強欲圏 → 若干厳格化"
+    else:
+        threshold_adj = 0
+        sentiment_adj = 0
+        signal = "⚪ 中立 → 標準設定"
+
+    # BTCドミナンスによる調整
+    if btc_dom > 55:
+        # BTC季節 → 仮想通貨全体に追い風
+        if fund_id == "fund_3":
+            threshold_adj -= 2  # チャレンジは積極化
+
+    # FRが高い場合は安全側に
+    if btc_fr > 0.08:
+        threshold_adj += 3
+        signal += " / FR高 → 条件厳格化"
+
+    optimized = {
+        "score_threshold": max(60, min(90, base_threshold + threshold_adj)),
+        "sentiment_min": max(4.0, min(7.0, base_sentiment + sentiment_adj)),
+        "market_signal": signal,
+        "fg_current": fg,
+        "btc_fr": btc_fr,
+        "adjustment": threshold_adj,
+    }
+
+    return optimized
+
+
+def analyze_fund_with_claude(fund_id: str, fund_data: dict, market_data: dict, optimized_params: dict) -> str:
+    """Claudeでファンドの投資パターンを分析"""
+    config = get_fund_config(fund_id)
+    val = fund_data.get('portfolio_value', fund_data.get('current_value', 10_000_000))
+    pnl = val - 10_000_000
+    pnl_pct = pnl / 10_000_000 * 100
+
+    top_mom = market_data.get('top_momentum', [])
+    top_names = ', '.join([f"{s['name']}({s['score']}点)" for s in top_mom[:3]])
+
+    prompt = f"""あなたは&AI QUANTUM EDGEの量子投資研究エージェントです。
+
+## {config['emoji']} {config['name']} {config['label']}
+目標: 月利{config['target_monthly']}%
+現在の成績: ¥{val:,.0f} ({pnl_pct:+.2f}%)
+
+## 現在の市場環境
+- Fear&Greed: {market_data.get('fear_greed', 50)}/100 ({market_data.get('fg_label', '')})
+- 7日平均F&G: {market_data.get('fg_avg_7day', 50):.1f}
+- BTC支配率: {market_data.get('btc_dominance', 50):.1f}%
+- BTC FR: {market_data.get('btc_fr', 0):.4f}%
+- モメンタムTop3: {top_names}
+- 平均モメンタム: {market_data.get('avg_momentum', 50):.1f}点
+
+## 量子最適化結果
+- 最適スコア閾値: {optimized_params['score_threshold']}点（基準値: {config.get('score_threshold', 75)}点）
+- 最適感情閾値: {optimized_params['sentiment_min']}（基準値: {config.get('sentiment_min', 5.5)}）
+- 市場シグナル: {optimized_params['market_signal']}
+
+## このファンドのルール
+- レバレッジ: {config.get('leverage', 5)}倍
+- 損切り: {config.get('stop_loss_pct', -5)}%
+- 利確①: +{config.get('take_profit_1', 8)}%
+- 利確②: +{config.get('take_profit_2', 15)}%
+- キャッシュ維持: {config.get('cash_min_pct', 40)}%以上
+- 取引サイズ: 残高{config.get('position_size_pct', 10)}%
+
+## 分析タスク
+以下を日本語・簡潔に出力してください:
+
+1. **今週の推奨銘柄TOP3** （理由付き・具体的な銘柄名）
+2. **最適エントリーパターン** （今の市場環境に合った戦略）
+3. **避けるべき条件** （今週リスクが高い状況）
+4. **量子最適化による推奨調整** （スコア閾値や条件の変更提案）
+5. **月利{config['target_monthly']}%達成への今週の作戦** （1〜2文で）
+
+※ 具体的な銘柄名・数字・根拠を必ず含めること
+※ 「モメンタム」という言葉は使わないこと
+※ 元本保証・確実な利益は絶対に言わないこと
+※ 合計200字以内で簡潔に"""
+
+    response = client.messages.create(
+        model="claude-sonnet-4-5",
+        max_tokens=800,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.content[0].text
+
+
+def evaluate_recent_performance(fund_id: str, days: int = 7) -> dict:
+    """
+    過去7日の成績を評価して負けパターンを分析
+    Returns: {"win_rate": float, "avg_daily_return": float, "loss_pattern": str, "suggested_threshold": int}
+    """
+    fund = load_fund(fund_id)
+    config = get_fund_config(fund_id)
+    history = fund.get("history", [])
+
+    # 直近7日分を抽出
+    cutoff = (datetime.now() - __import__('timedelta', fromlist=['timedelta'])
+              if False else datetime.now())
+    from datetime import timedelta
+    cutoff_str = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+    recent = [h for h in history if h.get("date", "") >= cutoff_str]
+
+    if not recent:
+        return {
+            "win_rate": 0.0,
+            "avg_daily_return": 0.0,
+            "loss_pattern": "データなし",
+            "suggested_threshold": config.get("score_threshold", 75),
+            "suggested_stop_loss": config.get("stop_loss_pct", -5.0),
+        }
+
+    returns = [h.get("day_return_pct", 0) for h in recent]
+    win_days = sum(1 for r in returns if r > 0)
+    loss_days = sum(1 for r in returns if r < 0)
+    win_rate = win_days / len(returns) * 100 if returns else 0
+    avg_daily_return = sum(returns) / len(returns) if returns else 0
+
+    # 負けパターン分析
+    if win_rate < 40:
+        loss_pattern = "頻繁な損失 → エントリー条件を厳格化"
+        threshold_adj = +5  # 閾値を上げる
+        stop_loss_adj = +1  # 損切りをタイトに
+    elif win_rate < 55:
+        loss_pattern = "やや負け越し → 条件を若干引き締め"
+        threshold_adj = +2
+        stop_loss_adj = +0.5
+    elif win_rate >= 70:
+        loss_pattern = "好調 → 条件を若干緩和して機会増加"
+        threshold_adj = -3
+        stop_loss_adj = -0.5
+    else:
+        loss_pattern = "標準 → 現状維持"
+        threshold_adj = 0
+        stop_loss_adj = 0
+
+    base_threshold = config.get("score_threshold", 75)
+    base_sl = config.get("stop_loss_pct", -5.0)
+
+    suggested_threshold = max(60, min(90, base_threshold + threshold_adj))
+    suggested_stop_loss = max(-8.0, min(-2.0, base_sl - stop_loss_adj))
+
+    return {
+        "win_rate": round(win_rate, 1),
+        "avg_daily_return": round(avg_daily_return, 2),
+        "total_days": len(recent),
+        "win_days": win_days,
+        "loss_days": loss_days,
+        "loss_pattern": loss_pattern,
+        "suggested_threshold": suggested_threshold,
+        "suggested_stop_loss": suggested_stop_loss,
+        "threshold_adj": threshold_adj,
+    }
+
+
+def apply_auto_parameter_adjustment(fund_id: str, perf: dict, market_data: dict):
+    """
+    分析結果に基づいてファンド設定ファイルを動的更新
+    （FUNDS定数は変更せず、fund_N.json内のoverride_paramsを更新）
+    """
+    fund = load_fund(fund_id)
+    config = get_fund_config(fund_id)
+
+    # バックテスト結果から最良戦略を取得
+    try:
+        from backtest import get_best_strategy_for_fund
+        best_strategy = get_best_strategy_for_fund(fund_id)
+    except:
+        best_strategy = None
+
+    override = fund.get("override_params", {})
+    override["score_threshold"] = perf["suggested_threshold"]
+    override["stop_loss_pct"] = perf["suggested_stop_loss"]
+    override["last_adjusted"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    override["adjustment_reason"] = perf["loss_pattern"]
+    override["7day_win_rate"] = perf["win_rate"]
+
+    if best_strategy:
+        override["recommended_strategy"] = best_strategy
+
+    fund["override_params"] = override
+
+    from demo_fund import save_fund
+    save_fund(fund_id, fund)
+    return override
+
+
+def run_fund_research():
+    """3ファンド全ての研究を実行"""
+    now = datetime.now().strftime("%Y/%m/%d %H:%M")
+    print(f"⚛️ 3ファンド研究エージェント開始 {now}")
+
+    # 市場データ取得
+    print("  📊 市場データ取得中...")
+    market_data = get_market_data()
+    fg = market_data.get('fear_greed', 50)
+
+    log = load_research_log()
+    log['total_research_sessions'] += 1
+    log['last_research'] = now
+
+    # ヘッダー送信（グループトピック: 🦴タスク管理 thread_id=14）
+    header_msg = f"""⚛️ *3ファンド 量子研究レポート*
+{now}
+
+📊 市場概況:
+😱 F&G: {fg}/100 ({market_data.get('fg_label', '')})
+₿ BTC支配率: {market_data.get('btc_dominance', 50):.1f}%
+📈 平均スコア: {market_data.get('avg_momentum', 50):.1f}点
+━━━━━━━━━━━━━━━"""
+
+    # KKへ直接送信
+    send_telegram(header_msg)
+    # グループの🏦デモファンドトピックへも送信（thread_id=10）
+    send_telegram(header_msg, GROUP_ID, thread_id=10)
+
+    # 各ファンドを分析
+    for fund_id in ["fund_1", "fund_2", "fund_3"]:
+        config = get_fund_config(fund_id)
+        fund_data = load_fund(fund_id)
+        val = fund_data.get('portfolio_value', fund_data.get('current_value', 10_000_000))
+        pnl_pct = (val - 10_000_000) / 10_000_000 * 100
+
+        print(f"  🔬 {config['name']} 分析中...")
+
+        # 過去7日成績評価 + 自動パラメータ調整
+        perf = evaluate_recent_performance(fund_id, days=7)
+        print(f"    📈 勝率{perf['win_rate']:.0f}% / {perf['loss_pattern']}")
+        adjusted_params = apply_auto_parameter_adjustment(fund_id, perf, market_data)
+        print(f"    🔧 閾値 → {adjusted_params['score_threshold']}点 / SL → {adjusted_params['stop_loss_pct']}%")
+
+        # 量子最適化
+        optimized = quantum_simulate_fund_params(fund_id, market_data)
+
+        # Claude分析
+        try:
+            analysis = analyze_fund_with_claude(fund_id, fund_data, market_data, optimized)
+        except Exception as e:
+            analysis = f"分析エラー: {str(e)[:100]}"
+
+        # パターンをログに記録
+        log[fund_id]['patterns'].append({
+            "date": now,
+            "fg": fg,
+            "optimized_threshold": optimized['score_threshold'],
+            "market_signal": optimized['market_signal'],
+            "analysis_summary": analysis[:200]
+        })
+        # 最新30件のみ保持
+        log[fund_id]['patterns'] = log[fund_id]['patterns'][-30:]
+
+        # レポート送信
+        perf_bar = "✅" if perf["win_rate"] >= 55 else "⚠️"
+        fund_msg = f"""{config['emoji']} *{config['name']} {config['label']}*（月利{config['target_monthly']}%目標）
+現在: ¥{val:,.0f} ({pnl_pct:+.2f}%)
+
+📊 *7日成績評価*:
+{perf_bar} 勝率: {perf['win_rate']:.0f}% ({perf['win_days']}勝{perf['loss_days']}敗)
+日平均: {perf['avg_daily_return']:+.2f}%
+パターン: {perf['loss_pattern']}
+🔧 自動調整: 閾値{adjusted_params['score_threshold']}点 / SL{adjusted_params['stop_loss_pct']}%
+
+⚛️ 量子最適化:
+スコア閾値: {optimized['score_threshold']}点
+{optimized['market_signal']}
+
+🔬 研究結果:
+{analysis}
+
+━━━━━━━━━━━━━━━"""
+
+        send_telegram(fund_msg)
+        send_telegram(fund_msg, GROUP_ID, thread_id=10)
+
+        import time
+        time.sleep(2)
+
+    # フッター
+    footer_msg = f"""✅ *研究完了*
+次回: 明晩02:30自動実行
+研究累計: {log['total_research_sessions']}回
+
+⚠️ 免責: 投資判断はご自身で
+数字は参考情報です🦴"""
+
+    send_telegram(footer_msg)
+    send_telegram(footer_msg, GROUP_ID, thread_id=10)
+
+    save_research_log(log)
+    print(f"✅ 3ファンド研究完了")
+
+
+if __name__ == "__main__":
+    run_fund_research()

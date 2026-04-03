@@ -1,0 +1,16 @@
+{
+  "current_holding": "EFA",
+  "entry_date": null,
+  "entry_price": {},
+  "history": [
+    {
+      "date": "2026/03/31",
+      "signal": "EFA",
+      "spy_ret": 0.1427,
+      "efa_ret": 0.1921
+    }
+  ],
+  "total_return": 1.0,
+  "peak": 1.0,
+  "last_check": "2026/03/31"
+}
