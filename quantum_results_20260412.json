@@ -1,0 +1,661 @@
+{
+  "timestamp": "2026/04/12 06:30 JST",
+  "device": "SV1シミュレーター",
+  "market_data": {
+    "fg": 15,
+    "top_scores": [
+      {
+        "name": "AMD",
+        "ticker": "AMD",
+        "score": 65,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 3.55,
+        "mom_20d": 26.7,
+        "mom_60d": 11.5
+      },
+      {
+        "name": "TON",
+        "ticker": "TON-USD",
+        "score": 61,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 1.96,
+        "mom_20d": 16.1,
+        "mom_60d": -31.1
+      },
+      {
+        "name": "ARM",
+        "ticker": "ARM",
+        "score": 60,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": -0.58,
+        "mom_20d": 28.7,
+        "mom_60d": 10.3
+      },
+      {
+        "name": "SOL",
+        "ticker": "SOL-USD",
+        "score": 48,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 1.16,
+        "mom_20d": -6.1,
+        "mom_60d": -38.3
+      },
+      {
+        "name": "TRX",
+        "ticker": "TRX-USD",
+        "score": 47,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 0.15,
+        "mom_20d": 3.9,
+        "mom_60d": 6.8
+      }
+    ]
+  },
+  "portfolio": {
+    "status": "classical_fallback",
+    "device": "Classical",
+    "selected_tickers": [
+      "AMD",
+      "TON",
+      "ARM"
+    ],
+    "allocation": {
+      "AMD": 0.3333333333333333,
+      "TON": 0.3333333333333333,
+      "ARM": 0.3333333333333333,
+      "SOL": 0,
+      "TRX": 0,
+      "NVDA": 0,
+      "SPX": 0,
+      "ETH": 0
+    },
+    "confidence": null
+  },
+  "grover": {
+    "status": "grover_simulated",
+    "algorithm": "Grover's Algorithm",
+    "speedup": "O(√17) = O(4)",
+    "best_ticker": "AMD",
+    "best_score": 65,
+    "top3": [
+      {
+        "ticker": "AMD",
+        "score": 65
+      },
+      {
+        "ticker": "TON",
+        "score": 61
+      },
+      {
+        "ticker": "ARM",
+        "score": 60
+      }
+    ],
+    "circuit_qubits": 5
+  },
+  "anomaly": {
+    "status": "completed",
+    "algorithm": "Quantum Entropy Analysis",
+    "entropy": 0.983,
+    "correlation": 0.602,
+    "avg_score": 40.4,
+    "fg_deviation": 0.071,
+    "anomaly_level": "LOW",
+    "anomalies": []
+  },
+  "strategy_optimization": {
+    "weights": {
+      "M1": 0.204,
+      "MT8": 0.226,
+      "ME1": 0.159,
+      "ME3": 0.188
+    },
+    "combined_sharpe": 1.04,
+    "method": "Classical fallback",
+    "strategies": [
+      "出来高×ブレイクアウト",
+      "ファクターモメンタム(Arnott2021)",
+      "アーニングスモメンタム",
+      "ML強化モメンタム(線形回帰)",
+      "アーニングスモメンタム"
+    ],
+    "error": "Validators defined with incorrect fields: validate_instructions (use check_fields=False if you're inheriting from the model and intended this)"
+  },
+  "timesfm_prediction": {
+    "BTC": {
+      "symbol": "BTC",
+      "current_price": 73471.78,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 73459.97,
+          "low_10": 73825.39,
+          "median": 73112.39,
+          "high_90": 76010.3
+        },
+        {
+          "day": 2,
+          "point": 73881.84,
+          "low_10": 73886.38,
+          "median": 73189.07,
+          "high_90": 77113.05
+        },
+        {
+          "day": 3,
+          "point": 73994.95,
+          "low_10": 74209.45,
+          "median": 73324.62,
+          "high_90": 78074.59
+        },
+        {
+          "day": 4,
+          "point": 73870.06,
+          "low_10": 74359.88,
+          "median": 72813.81,
+          "high_90": 78523.56
+        },
+        {
+          "day": 5,
+          "point": 73975.08,
+          "low_10": 73955.31,
+          "median": 72888.78,
+          "high_90": 79396.78
+        },
+        {
+          "day": 6,
+          "point": 74205.46,
+          "low_10": 74289.39,
+          "median": 73103.14,
+          "high_90": 80489.12
+        },
+        {
+          "day": 7,
+          "point": 74090.95,
+          "low_10": 74483.5,
+          "median": 72621.62,
+          "high_90": 80768.6
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.695,
+      "predicted_change_pct": 0.84,
+      "timestamp": "2026-04-12T06:30:10.859288",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "ETH": {
+      "symbol": "ETH",
+      "current_price": 2306.74,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 2295.72,
+          "low_10": 2291.7,
+          "median": 2276.19,
+          "high_90": 2412.44
+        },
+        {
+          "day": 2,
+          "point": 2314.41,
+          "low_10": 2319.18,
+          "median": 2288.82,
+          "high_90": 2469.26
+        },
+        {
+          "day": 3,
+          "point": 2314.67,
+          "low_10": 2326.59,
+          "median": 2286.72,
+          "high_90": 2506.0
+        },
+        {
+          "day": 4,
+          "point": 2315.38,
+          "low_10": 2343.43,
+          "median": 2274.08,
+          "high_90": 2532.99
+        },
+        {
+          "day": 5,
+          "point": 2311.65,
+          "low_10": 2323.36,
+          "median": 2273.84,
+          "high_90": 2559.32
+        },
+        {
+          "day": 6,
+          "point": 2321.15,
+          "low_10": 2338.44,
+          "median": 2279.34,
+          "high_90": 2599.13
+        },
+        {
+          "day": 7,
+          "point": 2323.23,
+          "low_10": 2333.79,
+          "median": 2270.06,
+          "high_90": 2615.73
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.561,
+      "predicted_change_pct": 0.72,
+      "timestamp": "2026-04-12T06:30:11.435603",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "current_price": 679.46,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 679.88,
+          "low_10": 678.23,
+          "median": 678.48,
+          "high_90": 686.6
+        },
+        {
+          "day": 2,
+          "point": 679.23,
+          "low_10": 678.31,
+          "median": 677.73,
+          "high_90": 687.36
+        },
+        {
+          "day": 3,
+          "point": 679.22,
+          "low_10": 677.8,
+          "median": 677.45,
+          "high_90": 688.24
+        },
+        {
+          "day": 4,
+          "point": 678.99,
+          "low_10": 676.39,
+          "median": 676.48,
+          "high_90": 688.67
+        },
+        {
+          "day": 5,
+          "point": 679.1,
+          "low_10": 677.4,
+          "median": 676.73,
+          "high_90": 689.57
+        },
+        {
+          "day": 6,
+          "point": 679.05,
+          "low_10": 676.5,
+          "median": 676.64,
+          "high_90": 690.48
+        },
+        {
+          "day": 7,
+          "point": 679.43,
+          "low_10": 677.76,
+          "median": 676.94,
+          "high_90": 691.14
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.916,
+      "predicted_change_pct": -0.0,
+      "timestamp": "2026-04-12T06:30:11.719100",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "EFA": {
+      "symbol": "EFA",
+      "current_price": 102.18,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 102.14,
+          "low_10": 101.84,
+          "median": 101.78,
+          "high_90": 103.64
+        },
+        {
+          "day": 2,
+          "point": 102.2,
+          "low_10": 102.22,
+          "median": 101.76,
+          "high_90": 104.05
+        },
+        {
+          "day": 3,
+          "point": 102.41,
+          "low_10": 102.24,
+          "median": 102.1,
+          "high_90": 104.37
+        },
+        {
+          "day": 4,
+          "point": 102.52,
+          "low_10": 101.95,
+          "median": 101.94,
+          "high_90": 104.62
+        },
+        {
+          "day": 5,
+          "point": 102.72,
+          "low_10": 102.75,
+          "median": 102.2,
+          "high_90": 104.79
+        },
+        {
+          "day": 6,
+          "point": 102.74,
+          "low_10": 102.58,
+          "median": 102.28,
+          "high_90": 105.15
+        },
+        {
+          "day": 7,
+          "point": 102.96,
+          "low_10": 102.49,
+          "median": 102.56,
+          "high_90": 105.57
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.887,
+      "predicted_change_pct": 0.76,
+      "timestamp": "2026-04-12T06:30:12.009417",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "GLD": {
+      "symbol": "GLD",
+      "current_price": 437.13,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 438.51,
+          "low_10": 438.35,
+          "median": 436.48,
+          "high_90": 451.26
+        },
+        {
+          "day": 2,
+          "point": 438.91,
+          "low_10": 438.22,
+          "median": 436.27,
+          "high_90": 455.35
+        },
+        {
+          "day": 3,
+          "point": 438.64,
+          "low_10": 438.89,
+          "median": 435.41,
+          "high_90": 458.62
+        },
+        {
+          "day": 4,
+          "point": 437.31,
+          "low_10": 437.04,
+          "median": 432.99,
+          "high_90": 459.34
+        },
+        {
+          "day": 5,
+          "point": 437.22,
+          "low_10": 439.66,
+          "median": 432.9,
+          "high_90": 460.92
+        },
+        {
+          "day": 6,
+          "point": 436.12,
+          "low_10": 437.68,
+          "median": 431.34,
+          "high_90": 461.89
+        },
+        {
+          "day": 7,
+          "point": 436.0,
+          "low_10": 434.88,
+          "median": 432.0,
+          "high_90": 464.27
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.76,
+      "predicted_change_pct": -0.26,
+      "timestamp": "2026-04-12T06:30:12.247373",
+      "model": "TimesFM 2.5 (200M)"
+    }
+  },
+  "prediction_market": {
+    "timestamp": "2026-04-11T22:30:13.555082",
+    "risk_score": 25,
+    "action": "HEDGE",
+    "action_detail": "予測市場が中程度のリスクを検知。GLD比率UPを検討。",
+    "alerts": [
+      "紛争リスク 99% → GLD比率UP推奨"
+    ],
+    "data_sources": [
+      "gamma_rest",
+      "none"
+    ],
+    "data": {
+      "fed": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-11T22:30:13.007502",
+        "rate_cut_prob": 0.0,
+        "no_change_prob": 0.0,
+        "rate_hike_prob": 0.0,
+        "details": []
+      },
+      "recession": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-11T22:30:13.189038",
+        "recession_prob": 0.0,
+        "details": []
+      },
+      "btc": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-11T22:30:13.324014",
+        "price_levels": []
+      },
+      "geopolitical": {
+        "sources": [
+          "gamma_rest"
+        ],
+        "timestamp": "2026-04-11T22:30:13.449387",
+        "conflict_prob": 0.9895,
+        "tariff_prob": 0.0,
+        "details": [
+          {
+            "question": "Military action against Iran ends before April 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 1, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 2, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 3, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 4, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 5, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 6, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 7, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 8, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 9, 2026?",
+            "yes_prob": 0.9895,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 10, 2026?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 11, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 12, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 13, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 14, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 15, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 16, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 17, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 18, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 19, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 24, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 29, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 20, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 26, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 30, 2026?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 21, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 23, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 25, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 28, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 22, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran ends on April 27, 2026?",
+            "yes_prob": 0.0005,
+            "source": "gamma"
+          },
+          {
+            "question": "Military action against Iran continues through April 30, 2026?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          }
+        ]
+      },
+      "market_movers": {
+        "timestamp": "2026-04-11T22:30:13.555037",
+        "threshold": 0.1,
+        "movers": [],
+        "alerts": [],
+        "sources": [
+          "gamma_rest_no_change"
+        ]
+      }
+    }
+  },
+  "cost_usd": 0.0
+}

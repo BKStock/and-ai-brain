@@ -273,10 +273,10 @@
     }
   ],
   "override_params": {
-    "score_threshold": 85,
-    "stop_loss_pct": -4.0,
-    "last_adjusted": "2026-04-03 01:30",
-    "adjustment_reason": "頻繁な損失 → エントリー条件を厳格化",
+    "score_threshold": 80,
+    "stop_loss_pct": -3.0,
+    "last_adjusted": "2026-04-30 02:30",
+    "adjustment_reason": "データなし",
     "7day_win_rate": 0.0,
     "recommended_strategy": "GRID"
   }

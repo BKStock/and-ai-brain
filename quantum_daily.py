@@ -596,6 +596,68 @@ def run_daily_quantum(use_real_quantum: bool = False):
         print(f"  [TimesFM error] {e}")
         timesfm_results = {"error": str(e)}
 
+    # ⑦ 予測市場インテリジェンス（Polymarket）
+    pm_results = None
+    try:
+        print("\n⑦ 予測市場インテリジェンス...")
+        from prediction_market import generate_risk_assessment, format_telegram_report as pm_format
+
+        pm_results = generate_risk_assessment()
+        pm_report = pm_format(pm_results)
+
+        score = pm_results["risk_score"]
+        action = pm_results["action"]
+
+        # リスクスコアに応じた絵文字
+        if score >= 50:
+            pm_emoji = "🔴"
+        elif score >= 30:
+            pm_emoji = "🟡"
+        elif score >= 15:
+            pm_emoji = "🟠"
+        else:
+            pm_emoji = "🟢"
+
+        pm_msg = (
+            f"{pm_emoji} *⑦ 予測市場インテリジェンス*\n\n"
+            f"リスクスコア: {score}/100 [{action}]\n"
+            f"{pm_results['action_detail']}\n"
+        )
+
+        if pm_results["alerts"]:
+            pm_msg += "\n⚠️ アラート:\n"
+            for a in pm_results["alerts"]:
+                pm_msg += f"  {a}\n"
+
+        # FRBデータ
+        fed = pm_results["data"]["fed"]
+        if fed["no_change_prob"] > 0 or fed["rate_cut_prob"] > 0:
+            pm_msg += (
+                f"\nFRB: 据置 {fed['no_change_prob']*100:.0f}% / "
+                f"利下げ {fed['rate_cut_prob']*100:.0f}%"
+            )
+
+        # 地政学
+        geo = pm_results["data"]["geopolitical"]
+        if geo["conflict_prob"] > 0.1:
+            pm_msg += f"\n地政学リスク: 紛争 {geo['conflict_prob']*100:.0f}%"
+
+        pm_msg += "\n\nSource: Polymarket (real-time)"
+
+        requests.post(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            json={"chat_id": CHAT_ID, "text": pm_msg, "parse_mode": "Markdown"},
+            timeout=10,
+        )
+        print(f"  → リスクスコア: {score}/100 [{action}]")
+        if pm_results["alerts"]:
+            for a in pm_results["alerts"]:
+                print(f"  → {a}")
+        print("  → 予測市場レポート送信完了")
+    except Exception as e:
+        print(f"  [Prediction Market error] {e}")
+        pm_results = {"error": str(e)}
+
     # 結果を保存
     result_file = f"/Users/mr.k/Projects/and-ai-brain/quantum_results_{datetime.now().strftime('%Y%m%d')}.json"
     with open(result_file, 'w') as f:
@@ -609,6 +671,7 @@ def run_daily_quantum(use_real_quantum: bool = False):
             "anomaly": results['anomaly'],
             "strategy_optimization": strategy_opt_result,
             "timesfm_prediction": timesfm_results,
+            "prediction_market": pm_results,
             "cost_usd": cost,
         }, f, ensure_ascii=False, indent=2)
 

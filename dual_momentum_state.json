@@ -1,5 +1,5 @@
 {
-  "current_holding": "EFA",
+  "current_holding": "SPY",
   "entry_date": null,
   "entry_price": {},
   "history": [
@@ -8,9 +8,21 @@
       "signal": "EFA",
       "spy_ret": 0.1427,
       "efa_ret": 0.1921
+    },
+    {
+      "date": "2026/04/28",
+      "signal": "SPY",
+      "spy_ret": 0.3044,
+      "efa_ret": 0.239
+    },
+    {
+      "date": "2026/04/29",
+      "signal": "SPY",
+      "spy_ret": 0.2981,
+      "efa_ret": 0.2339
     }
   ],
   "total_return": 1.0,
   "peak": 1.0,
-  "last_check": "2026/03/31"
+  "last_check": "2026/04/29"
 }

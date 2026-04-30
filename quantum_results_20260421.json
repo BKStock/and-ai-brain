@@ -1,0 +1,521 @@
+{
+  "timestamp": "2026/04/21 06:30 JST",
+  "device": "SV1シミュレーター",
+  "market_data": {
+    "fg": 29,
+    "top_scores": [
+      {
+        "name": "AMD",
+        "ticker": "AMD",
+        "score": 75,
+        "signal": "🔥 急上昇中",
+        "trend": "up",
+        "arrows": "▲▲▲",
+        "change_24h": -1.24,
+        "mom_20d": 35.7,
+        "mom_60d": 24.1
+      },
+      {
+        "name": "TON",
+        "ticker": "TON-USD",
+        "score": 72,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 0.0,
+        "mom_20d": 36.5,
+        "mom_60d": -13.2
+      },
+      {
+        "name": "NVDA",
+        "ticker": "NVDA",
+        "score": 63,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 0.19,
+        "mom_20d": 15.0,
+        "mom_60d": 9.2
+      },
+      {
+        "name": "ARM",
+        "ticker": "ARM",
+        "score": 62,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 5.02,
+        "mom_20d": 27.9,
+        "mom_60d": 23.4
+      },
+      {
+        "name": "TRX",
+        "ticker": "TRX-USD",
+        "score": 58,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": -0.27,
+        "mom_20d": 4.0,
+        "mom_60d": 9.8
+      }
+    ]
+  },
+  "portfolio": {
+    "status": "classical_fallback",
+    "device": "Classical",
+    "selected_tickers": [
+      "AMD",
+      "TON",
+      "NVDA"
+    ],
+    "allocation": {
+      "AMD": 0.3333333333333333,
+      "TON": 0.3333333333333333,
+      "NVDA": 0.3333333333333333,
+      "ARM": 0,
+      "TRX": 0,
+      "SPX": 0,
+      "GRAB": 0,
+      "BTC": 0
+    },
+    "confidence": null
+  },
+  "grover": {
+    "status": "grover_simulated",
+    "algorithm": "Grover's Algorithm",
+    "speedup": "O(√17) = O(4)",
+    "best_ticker": "AMD",
+    "best_score": 75,
+    "top3": [
+      {
+        "ticker": "AMD",
+        "score": 75
+      },
+      {
+        "ticker": "TON",
+        "score": 72
+      },
+      {
+        "ticker": "NVDA",
+        "score": 63
+      }
+    ],
+    "circuit_qubits": 5
+  },
+  "anomaly": {
+    "status": "completed",
+    "algorithm": "Quantum Entropy Analysis",
+    "entropy": 0.992,
+    "correlation": 0.544,
+    "avg_score": 50.8,
+    "fg_deviation": 0.194,
+    "anomaly_level": "LOW",
+    "anomalies": []
+  },
+  "strategy_optimization": {
+    "weights": {
+      "M1": 0.204,
+      "MT8": 0.226,
+      "ME1": 0.16,
+      "ME3": 0.188
+    },
+    "combined_sharpe": 1.04,
+    "method": "Classical fallback",
+    "strategies": [
+      "出来高×ブレイクアウト",
+      "ファクターモメンタム(Arnott2021)",
+      "アーニングスモメンタム",
+      "ML強化モメンタム(線形回帰)",
+      "アーニングスモメンタム"
+    ],
+    "error": "Validators defined with incorrect fields: validate_instructions (use check_fields=False if you're inheriting from the model and intended this)"
+  },
+  "timesfm_prediction": {
+    "BTC": {
+      "symbol": "BTC",
+      "current_price": 75955.39,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 76173.39,
+          "low_10": 76419.36,
+          "median": 75651.42,
+          "high_90": 79264.03
+        },
+        {
+          "day": 2,
+          "point": 76259.77,
+          "low_10": 76126.25,
+          "median": 75630.8,
+          "high_90": 80065.64
+        },
+        {
+          "day": 3,
+          "point": 76172.23,
+          "low_10": 76439.19,
+          "median": 75414.43,
+          "high_90": 80560.12
+        },
+        {
+          "day": 4,
+          "point": 76089.44,
+          "low_10": 76249.89,
+          "median": 75073.95,
+          "high_90": 80894.69
+        },
+        {
+          "day": 5,
+          "point": 76138.01,
+          "low_10": 76167.59,
+          "median": 75148.15,
+          "high_90": 81554.75
+        },
+        {
+          "day": 6,
+          "point": 76190.52,
+          "low_10": 76283.68,
+          "median": 75123.35,
+          "high_90": 82400.39
+        },
+        {
+          "day": 7,
+          "point": 76205.88,
+          "low_10": 76194.5,
+          "median": 74834.84,
+          "high_90": 82740.34
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.684,
+      "predicted_change_pct": 0.33,
+      "timestamp": "2026-04-21T06:30:10.795332",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "ETH": {
+      "symbol": "ETH",
+      "current_price": 2320.11,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 2339.41,
+          "low_10": 2345.43,
+          "median": 2318.15,
+          "high_90": 2468.36
+        },
+        {
+          "day": 2,
+          "point": 2355.0,
+          "low_10": 2361.67,
+          "median": 2328.66,
+          "high_90": 2505.58
+        },
+        {
+          "day": 3,
+          "point": 2355.57,
+          "low_10": 2362.11,
+          "median": 2330.76,
+          "high_90": 2537.93
+        },
+        {
+          "day": 4,
+          "point": 2356.05,
+          "low_10": 2371.89,
+          "median": 2320.5,
+          "high_90": 2563.07
+        },
+        {
+          "day": 5,
+          "point": 2358.18,
+          "low_10": 2357.84,
+          "median": 2322.0,
+          "high_90": 2576.84
+        },
+        {
+          "day": 6,
+          "point": 2365.54,
+          "low_10": 2403.95,
+          "median": 2332.35,
+          "high_90": 2617.05
+        },
+        {
+          "day": 7,
+          "point": 2373.24,
+          "low_10": 2386.77,
+          "median": 2325.83,
+          "high_90": 2638.67
+        }
+      ],
+      "trend": "bullish",
+      "confidence": 0.594,
+      "predicted_change_pct": 2.29,
+      "timestamp": "2026-04-21T06:30:11.327062",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "current_price": 708.72,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 708.49,
+          "low_10": 706.56,
+          "median": 706.97,
+          "high_90": 715.66
+        },
+        {
+          "day": 2,
+          "point": 708.36,
+          "low_10": 706.8,
+          "median": 706.67,
+          "high_90": 716.95
+        },
+        {
+          "day": 3,
+          "point": 708.21,
+          "low_10": 706.94,
+          "median": 706.54,
+          "high_90": 717.5
+        },
+        {
+          "day": 4,
+          "point": 708.98,
+          "low_10": 705.58,
+          "median": 706.38,
+          "high_90": 719.09
+        },
+        {
+          "day": 5,
+          "point": 708.98,
+          "low_10": 706.66,
+          "median": 706.4,
+          "high_90": 719.63
+        },
+        {
+          "day": 6,
+          "point": 709.25,
+          "low_10": 706.53,
+          "median": 706.94,
+          "high_90": 720.65
+        },
+        {
+          "day": 7,
+          "point": 709.79,
+          "low_10": 707.34,
+          "median": 707.46,
+          "high_90": 721.42
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.915,
+      "predicted_change_pct": 0.15,
+      "timestamp": "2026-04-21T06:30:11.625996",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "EFA": {
+      "symbol": "EFA",
+      "current_price": 103.91,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 103.89,
+          "low_10": 103.7,
+          "median": 103.61,
+          "high_90": 105.06
+        },
+        {
+          "day": 2,
+          "point": 103.93,
+          "low_10": 103.97,
+          "median": 103.61,
+          "high_90": 105.47
+        },
+        {
+          "day": 3,
+          "point": 104.05,
+          "low_10": 103.9,
+          "median": 103.81,
+          "high_90": 105.79
+        },
+        {
+          "day": 4,
+          "point": 104.15,
+          "low_10": 103.65,
+          "median": 103.67,
+          "high_90": 106.03
+        },
+        {
+          "day": 5,
+          "point": 104.24,
+          "low_10": 104.2,
+          "median": 103.81,
+          "high_90": 106.28
+        },
+        {
+          "day": 6,
+          "point": 104.35,
+          "low_10": 104.2,
+          "median": 103.99,
+          "high_90": 106.57
+        },
+        {
+          "day": 7,
+          "point": 104.48,
+          "low_10": 103.97,
+          "median": 104.14,
+          "high_90": 106.9
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.9,
+      "predicted_change_pct": 0.54,
+      "timestamp": "2026-04-21T06:30:11.888705",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "GLD": {
+      "symbol": "GLD",
+      "current_price": 442.09,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 442.63,
+          "low_10": 441.62,
+          "median": 440.49,
+          "high_90": 455.4
+        },
+        {
+          "day": 2,
+          "point": 442.39,
+          "low_10": 441.9,
+          "median": 439.92,
+          "high_90": 458.86
+        },
+        {
+          "day": 3,
+          "point": 442.27,
+          "low_10": 443.01,
+          "median": 438.75,
+          "high_90": 461.97
+        },
+        {
+          "day": 4,
+          "point": 441.19,
+          "low_10": 440.93,
+          "median": 436.62,
+          "high_90": 462.61
+        },
+        {
+          "day": 5,
+          "point": 440.12,
+          "low_10": 443.13,
+          "median": 435.46,
+          "high_90": 463.66
+        },
+        {
+          "day": 6,
+          "point": 440.04,
+          "low_10": 441.63,
+          "median": 435.11,
+          "high_90": 465.19
+        },
+        {
+          "day": 7,
+          "point": 440.65,
+          "low_10": 439.59,
+          "median": 435.72,
+          "high_90": 467.24
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.769,
+      "predicted_change_pct": -0.33,
+      "timestamp": "2026-04-21T06:30:12.131321",
+      "model": "TimesFM 2.5 (200M)"
+    }
+  },
+  "prediction_market": {
+    "timestamp": "2026-04-20T22:30:13.504478",
+    "risk_score": 25,
+    "action": "HEDGE",
+    "action_detail": "予測市場が中程度のリスクを検知。GLD比率UPを検討。",
+    "alerts": [
+      "紛争リスク 70% → GLD比率UP推奨"
+    ],
+    "data_sources": [
+      "gamma_rest",
+      "none"
+    ],
+    "data": {
+      "fed": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-20T22:30:12.917386",
+        "rate_cut_prob": 0.0,
+        "no_change_prob": 0.0,
+        "rate_hike_prob": 0.0,
+        "details": []
+      },
+      "recession": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-20T22:30:13.101096",
+        "recession_prob": 0.0,
+        "details": []
+      },
+      "btc": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-20T22:30:13.257068",
+        "price_levels": []
+      },
+      "geopolitical": {
+        "sources": [
+          "gamma_rest"
+        ],
+        "timestamp": "2026-04-20T22:30:13.390227",
+        "conflict_prob": 0.695,
+        "tariff_prob": 0.0,
+        "details": [
+          {
+            "question": "US x Iran permanent peace deal by April 22, 2026?",
+            "yes_prob": 0.14,
+            "source": "gamma"
+          },
+          {
+            "question": "US x Iran permanent peace deal by April 30, 2026?",
+            "yes_prob": 0.325,
+            "source": "gamma"
+          },
+          {
+            "question": "US x Iran permanent peace deal by May 31, 2026?",
+            "yes_prob": 0.595,
+            "source": "gamma"
+          },
+          {
+            "question": "US x Iran permanent peace deal by June 30, 2026?",
+            "yes_prob": 0.695,
+            "source": "gamma"
+          }
+        ]
+      },
+      "market_movers": {
+        "timestamp": "2026-04-20T22:30:13.504403",
+        "threshold": 0.1,
+        "movers": [],
+        "alerts": [],
+        "sources": [
+          "gamma_rest_no_change"
+        ]
+      }
+    }
+  },
+  "cost_usd": 0.0
+}

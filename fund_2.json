@@ -238,7 +238,7 @@
   "override_params": {
     "score_threshold": 80,
     "stop_loss_pct": -6.0,
-    "last_adjusted": "2026-04-03 01:30",
+    "last_adjusted": "2026-04-05 02:30",
     "adjustment_reason": "頻繁な損失 → エントリー条件を厳格化",
     "7day_win_rate": 0.0,
     "recommended_strategy": "GRID"

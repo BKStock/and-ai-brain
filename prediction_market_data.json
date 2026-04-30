@@ -1,0 +1,312 @@
+{
+  "timestamp": "2026-04-05T12:27:28.470031",
+  "risk_score": 25,
+  "action": "HEDGE",
+  "action_detail": "予測市場が中程度のリスクを検知。GLD比率UPを検討。",
+  "alerts": [
+    "[POLYMARKET] Which companies will be acquired before 2027? - Will iRobot  UP +73.5% → 100.0%",
+    "[POLYMARKET] 2026 Men's Australian Open Winner - Will Jannik Sinner win t DOWN -52.4% → 0.0%",
+    "[POLYMARKET] 2026 NCAA Tournament Winner - Will Michigan win the 2026 NCA UP +39.0% → 73.5%",
+    "[POLYMARKET] 2026 NCAA Tournament Winner - Will Arizona win the 2026 NCAA DOWN -32.6% → 0.0%",
+    "[POLYMARKET] 2026 Men's Australian Open Winner - Will Carlos Alcaraz win  UP +26.4% → 100.0%",
+    "[POLYMARKET] 2026 Men's Australian Open Winner - Will Novak Djokovic win  DOWN -26.3% → 0.0%",
+    "[POLYMARKET] LA LIGA Winner  - Will Barcelona win the 2025–26 La Liga? UP +19.5% → 94.0%",
+    "[POLYMARKET] LA LIGA Winner  - Will Real Madrid win the 2025–26 La Liga? DOWN -19.0% → 4.5%",
+    "[POLYMARKET] What price will Bitcoin hit in 2026? - Will Bitcoin dip to $ UP +18.4% → 100.0%",
+    "[POLYMARKET] 2026 NCAA Tournament Winner - Will Illinois win the 2026 NCA DOWN -18.1% → 0.0%",
+    "紛争リスク 100% → GLD比率UP推奨"
+  ],
+  "data_sources": [
+    "none",
+    "pmxt_polymarket"
+  ],
+  "data": {
+    "fed": {
+      "sources": [
+        "none"
+      ],
+      "timestamp": "2026-04-05T12:26:12.169256",
+      "rate_cut_prob": 0.0,
+      "no_change_prob": 0.0,
+      "rate_hike_prob": 0.0,
+      "details": []
+    },
+    "recession": {
+      "sources": [
+        "none"
+      ],
+      "timestamp": "2026-04-05T12:26:29.711635",
+      "recession_prob": 0.0,
+      "details": []
+    },
+    "btc": {
+      "sources": [
+        "none"
+      ],
+      "timestamp": "2026-04-05T12:26:42.541537",
+      "price_levels": []
+    },
+    "geopolitical": {
+      "sources": [
+        "pmxt_polymarket"
+      ],
+      "timestamp": "2026-04-05T12:26:55.678145",
+      "conflict_prob": 0.9985,
+      "tariff_prob": 0.0,
+      "details": [
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by January 31?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by March 31?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by February 28?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by December 31?",
+          "yes_prob": 0.9985,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by March 3?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by March 1?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by March 14?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by March 7?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US forces enter Iran by..? - US forces enter Iran by April 30?",
+          "yes_prob": 0.9975,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by March 31?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by April 30?",
+          "yes_prob": 0.175,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by March 6?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by March 15?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by March 2?",
+          "yes_prob": 0.0,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by December 31?",
+          "yes_prob": 0.695,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by June 30?",
+          "yes_prob": 0.465,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by May 31?",
+          "yes_prob": 0.335,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by April 15?",
+          "yes_prob": 0.045,
+          "source": "polymarket"
+        },
+        {
+          "question": "US x Iran ceasefire by...? - US x Iran ceasefire by April 7?",
+          "yes_prob": 0.0095,
+          "source": "polymarket"
+        },
+        {
+          "question": "Will Elon Musk visit Mars in his lifetime?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Who will the next Pope be?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Will the world pass 2 degrees Celsius over pre-industrial levels before 2050?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Will a human land on Mars before California starts high-speed rail?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        },
+        {
+          "question": "Will a supervolcano erupt before 2050?",
+          "yes_prob": 0.0,
+          "source": "kalshi"
+        }
+      ]
+    },
+    "market_movers": {
+      "timestamp": "2026-04-05T12:27:09.438447",
+      "threshold": 0.1,
+      "movers": [
+        {
+          "exchange": "polymarket",
+          "question": "Which companies will be acquired before 2027? - Will iRobot be acquired before 2027?",
+          "yes_prob": 1.0,
+          "change_24h": 0.7345,
+          "abs_change": 0.7345,
+          "volume_24h": 0
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 Men's Australian Open Winner - Will Jannik Sinner win the 2026 Australian Open?",
+          "yes_prob": 0.0,
+          "change_24h": -0.5245,
+          "abs_change": 0.5245,
+          "volume_24h": 0
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 NCAA Tournament Winner - Will Michigan win the 2026 NCAA Tournament?",
+          "yes_prob": 0.735,
+          "change_24h": 0.39,
+          "abs_change": 0.39,
+          "volume_24h": 251677.53704800038
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 NCAA Tournament Winner - Will Arizona win the 2026 NCAA Tournament?",
+          "yes_prob": 0.0,
+          "change_24h": -0.3255,
+          "abs_change": 0.3255,
+          "volume_24h": 254957.09673300004
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 Men's Australian Open Winner - Will Carlos Alcaraz win the 2026 Australian Open?",
+          "yes_prob": 1.0,
+          "change_24h": 0.264,
+          "abs_change": 0.264,
+          "volume_24h": 0
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 Men's Australian Open Winner - Will Novak Djokovic win the 2026 Australian Open?",
+          "yes_prob": 0.0,
+          "change_24h": -0.263,
+          "abs_change": 0.263,
+          "volume_24h": 0
+        },
+        {
+          "exchange": "polymarket",
+          "question": "LA LIGA Winner  - Will Barcelona win the 2025–26 La Liga?",
+          "yes_prob": 0.94,
+          "change_24h": 0.195,
+          "abs_change": 0.195,
+          "volume_24h": 124930.86988299998
+        },
+        {
+          "exchange": "polymarket",
+          "question": "LA LIGA Winner  - Will Real Madrid win the 2025–26 La Liga?",
+          "yes_prob": 0.045,
+          "change_24h": -0.19,
+          "abs_change": 0.19,
+          "volume_24h": 136122.695476
+        },
+        {
+          "exchange": "polymarket",
+          "question": "What price will Bitcoin hit in 2026? - Will Bitcoin dip to $65,000 by December 31, 2026?",
+          "yes_prob": 1.0,
+          "change_24h": 0.1845,
+          "abs_change": 0.1845,
+          "volume_24h": 0
+        },
+        {
+          "exchange": "polymarket",
+          "question": "2026 NCAA Tournament Winner - Will Illinois win the 2026 NCAA Tournament?",
+          "yes_prob": 0.0,
+          "change_24h": -0.1815,
+          "abs_change": 0.1815,
+          "volume_24h": 150217.60907099998
+        }
+      ],
+      "alerts": [
+        "[POLYMARKET] Which companies will be acquired before 2027? - Will iRobot  UP +73.5% → 100.0%",
+        "[POLYMARKET] 2026 Men's Australian Open Winner - Will Jannik Sinner win t DOWN -52.4% → 0.0%",
+        "[POLYMARKET] 2026 NCAA Tournament Winner - Will Michigan win the 2026 NCA UP +39.0% → 73.5%",
+        "[POLYMARKET] 2026 NCAA Tournament Winner - Will Arizona win the 2026 NCAA DOWN -32.6% → 0.0%",
+        "[POLYMARKET] 2026 Men's Australian Open Winner - Will Carlos Alcaraz win  UP +26.4% → 100.0%",
+        "[POLYMARKET] 2026 Men's Australian Open Winner - Will Novak Djokovic win  DOWN -26.3% → 0.0%",
+        "[POLYMARKET] LA LIGA Winner  - Will Barcelona win the 2025–26 La Liga? UP +19.5% → 94.0%",
+        "[POLYMARKET] LA LIGA Winner  - Will Real Madrid win the 2025–26 La Liga? DOWN -19.0% → 4.5%",
+        "[POLYMARKET] What price will Bitcoin hit in 2026? - Will Bitcoin dip to $ UP +18.4% → 100.0%",
+        "[POLYMARKET] 2026 NCAA Tournament Winner - Will Illinois win the 2026 NCA DOWN -18.1% → 0.0%"
+      ],
+      "sources": [
+        "pmxt_polymarket",
+        "pmxt_kalshi"
+      ]
+    }
+  }
+}

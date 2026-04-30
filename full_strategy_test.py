@@ -61,8 +61,42 @@ def get_fred(series_id: str, limit: int = 1000) -> pd.Series:
 
 
 def get_prices(ticker: str, period: str = "5y") -> pd.Series:
-    df = yf.download(ticker, period=period, auto_adjust=True, progress=False)
-    return df["Close"].dropna().squeeze()
+    """
+    OpenBBを優先してOHLCVデータを取得。失敗時はyfinanceにフォールバック。
+    - OpenBBは長期データ（5年+）が制限なしで取得可能
+    - tickerマッピング: BTC-USD → BTC-USD, ETH-USD → ETH-USD
+    """
+    from datetime import datetime, timedelta
+
+    # period文字列を日付に変換
+    period_map = {"1y": 365, "2y": 730, "3y": 1095, "5y": 1825, "10y": 3650}
+    days = period_map.get(period, 1825)
+    start_date = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+
+    # OpenBBで取得試行
+    try:
+        from openbb import obb
+        # 暗号資産の場合
+        if any(c in ticker for c in ["BTC", "ETH", "SOL", "XRP"]):
+            result = obb.crypto.price.historical(
+                symbol=ticker,
+                start_date=start_date,
+                provider="yfinance"
+            )
+        else:
+            result = obb.equity.price.historical(
+                symbol=ticker,
+                start_date=start_date,
+                provider="yfinance"
+            )
+        df = result.to_dataframe()
+        df.index = pd.to_datetime(df.index)
+        return df["close"].dropna().squeeze()
+    except Exception as e:
+        # フォールバック: yfinance直接
+        import yfinance as yf
+        df = yf.download(ticker, period=period, auto_adjust=True, progress=False)
+        return df["Close"].dropna().squeeze()
 
 
 # ============================================================

@@ -1,0 +1,1660 @@
+{
+  "timestamp": "2026/04/17 06:30 JST",
+  "device": "SV1シミュレーター",
+  "market_data": {
+    "fg": 23,
+    "top_scores": [
+      {
+        "name": "AMD",
+        "ticker": "AMD",
+        "score": 74,
+        "signal": "📈 上昇トレンド",
+        "trend": "up",
+        "arrows": "▲▲",
+        "change_24h": 7.8,
+        "mom_20d": 35.6,
+        "mom_60d": 27.7
+      },
+      {
+        "name": "ARM",
+        "ticker": "ARM",
+        "score": 59,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 1.88,
+        "mom_20d": 25.0,
+        "mom_60d": 14.9
+      },
+      {
+        "name": "NVDA",
+        "ticker": "NVDA",
+        "score": 57,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": -0.26,
+        "mom_20d": 11.1,
+        "mom_60d": 8.7
+      },
+      {
+        "name": "TRX",
+        "ticker": "TRX-USD",
+        "score": 53,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 0.04,
+        "mom_20d": 3.4,
+        "mom_60d": 2.8
+      },
+      {
+        "name": "SPX",
+        "ticker": "^GSPC",
+        "score": 50,
+        "signal": "→ 横ばい",
+        "trend": "neutral",
+        "arrows": "→",
+        "change_24h": 0.26,
+        "mom_20d": 6.6,
+        "mom_60d": 2.5
+      }
+    ]
+  },
+  "portfolio": {
+    "status": "classical_fallback",
+    "device": "Classical",
+    "selected_tickers": [
+      "AMD",
+      "ARM",
+      "NVDA"
+    ],
+    "allocation": {
+      "AMD": 0.3333333333333333,
+      "ARM": 0.3333333333333333,
+      "NVDA": 0.3333333333333333,
+      "TRX": 0,
+      "SPX": 0,
+      "BTC": 0,
+      "ETH": 0,
+      "XRP": 0
+    },
+    "confidence": null
+  },
+  "grover": {
+    "status": "grover_simulated",
+    "algorithm": "Grover's Algorithm",
+    "speedup": "O(√17) = O(4)",
+    "best_ticker": "AMD",
+    "best_score": 74,
+    "top3": [
+      {
+        "ticker": "AMD",
+        "score": 74
+      },
+      {
+        "ticker": "ARM",
+        "score": 59
+      },
+      {
+        "ticker": "NVDA",
+        "score": 57
+      }
+    ],
+    "circuit_qubits": 5
+  },
+  "anomaly": {
+    "status": "completed",
+    "algorithm": "Quantum Entropy Analysis",
+    "entropy": 0.992,
+    "correlation": 0.345,
+    "avg_score": 46.5,
+    "fg_deviation": 0.278,
+    "anomaly_level": "LOW",
+    "anomalies": []
+  },
+  "strategy_optimization": {
+    "weights": {
+      "M1": 0.204,
+      "ME1": 0.16,
+      "MT8": 0.226,
+      "ME3": 0.188
+    },
+    "combined_sharpe": 1.04,
+    "method": "Classical fallback",
+    "strategies": [
+      "出来高×ブレイクアウト",
+      "アーニングスモメンタム",
+      "ファクターモメンタム(Arnott2021)",
+      "ML強化モメンタム(線形回帰)",
+      "アーニングスモメンタム"
+    ],
+    "error": "Validators defined with incorrect fields: validate_instructions (use check_fields=False if you're inheriting from the model and intended this)"
+  },
+  "timesfm_prediction": {
+    "BTC": {
+      "symbol": "BTC",
+      "current_price": 74943.59,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 75171.84,
+          "low_10": 75475.91,
+          "median": 74670.88,
+          "high_90": 78411.23
+        },
+        {
+          "day": 2,
+          "point": 75269.66,
+          "low_10": 75349.7,
+          "median": 74562.51,
+          "high_90": 79266.93
+        },
+        {
+          "day": 3,
+          "point": 75362.1,
+          "low_10": 75509.05,
+          "median": 74548.6,
+          "high_90": 80029.53
+        },
+        {
+          "day": 4,
+          "point": 75448.25,
+          "low_10": 75716.06,
+          "median": 74271.45,
+          "high_90": 80684.84
+        },
+        {
+          "day": 5,
+          "point": 75698.09,
+          "low_10": 75899.5,
+          "median": 74518.95,
+          "high_90": 81574.03
+        },
+        {
+          "day": 6,
+          "point": 75738.83,
+          "low_10": 75917.46,
+          "median": 74562.95,
+          "high_90": 82441.66
+        },
+        {
+          "day": 7,
+          "point": 75720.83,
+          "low_10": 76118.45,
+          "median": 74200.18,
+          "high_90": 82984.95
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.663,
+      "predicted_change_pct": 1.04,
+      "timestamp": "2026-04-17T06:30:10.001318",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "ETH": {
+      "symbol": "ETH",
+      "current_price": 2344.33,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 2344.53,
+          "low_10": 2354.67,
+          "median": 2322.35,
+          "high_90": 2477.92
+        },
+        {
+          "day": 2,
+          "point": 2369.97,
+          "low_10": 2369.41,
+          "median": 2344.47,
+          "high_90": 2537.18
+        },
+        {
+          "day": 3,
+          "point": 2378.81,
+          "low_10": 2392.04,
+          "median": 2348.63,
+          "high_90": 2578.73
+        },
+        {
+          "day": 4,
+          "point": 2387.24,
+          "low_10": 2404.09,
+          "median": 2344.5,
+          "high_90": 2613.8
+        },
+        {
+          "day": 5,
+          "point": 2392.21,
+          "low_10": 2404.28,
+          "median": 2351.4,
+          "high_90": 2646.99
+        },
+        {
+          "day": 6,
+          "point": 2408.58,
+          "low_10": 2433.42,
+          "median": 2366.21,
+          "high_90": 2690.85
+        },
+        {
+          "day": 7,
+          "point": 2411.08,
+          "low_10": 2423.17,
+          "median": 2355.47,
+          "high_90": 2708.65
+        }
+      ],
+      "trend": "bullish",
+      "confidence": 0.551,
+      "predicted_change_pct": 2.85,
+      "timestamp": "2026-04-17T06:30:10.528343",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "SPY": {
+      "symbol": "SPY",
+      "current_price": 701.66,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 702.24,
+          "low_10": 700.59,
+          "median": 700.87,
+          "high_90": 709.44
+        },
+        {
+          "day": 2,
+          "point": 701.17,
+          "low_10": 700.14,
+          "median": 699.72,
+          "high_90": 709.96
+        },
+        {
+          "day": 3,
+          "point": 700.86,
+          "low_10": 700.33,
+          "median": 699.26,
+          "high_90": 710.55
+        },
+        {
+          "day": 4,
+          "point": 700.99,
+          "low_10": 698.06,
+          "median": 698.48,
+          "high_90": 711.43
+        },
+        {
+          "day": 5,
+          "point": 700.74,
+          "low_10": 698.64,
+          "median": 698.1,
+          "high_90": 712.01
+        },
+        {
+          "day": 6,
+          "point": 700.8,
+          "low_10": 698.66,
+          "median": 698.31,
+          "high_90": 712.77
+        },
+        {
+          "day": 7,
+          "point": 701.09,
+          "low_10": 698.06,
+          "median": 698.68,
+          "high_90": 713.33
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.913,
+      "predicted_change_pct": -0.08,
+      "timestamp": "2026-04-17T06:30:10.818791",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "EFA": {
+      "symbol": "EFA",
+      "current_price": 103.01,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 103.18,
+          "low_10": 102.98,
+          "median": 102.91,
+          "high_90": 104.3
+        },
+        {
+          "day": 2,
+          "point": 103.25,
+          "low_10": 103.2,
+          "median": 102.91,
+          "high_90": 104.77
+        },
+        {
+          "day": 3,
+          "point": 103.37,
+          "low_10": 103.21,
+          "median": 103.12,
+          "high_90": 105.09
+        },
+        {
+          "day": 4,
+          "point": 103.52,
+          "low_10": 102.97,
+          "median": 103.07,
+          "high_90": 105.41
+        },
+        {
+          "day": 5,
+          "point": 103.54,
+          "low_10": 103.49,
+          "median": 103.15,
+          "high_90": 105.54
+        },
+        {
+          "day": 6,
+          "point": 103.6,
+          "low_10": 103.45,
+          "median": 103.29,
+          "high_90": 105.83
+        },
+        {
+          "day": 7,
+          "point": 103.85,
+          "low_10": 103.34,
+          "median": 103.56,
+          "high_90": 106.28
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.899,
+      "predicted_change_pct": 0.81,
+      "timestamp": "2026-04-17T06:30:11.069668",
+      "model": "TimesFM 2.5 (200M)"
+    },
+    "GLD": {
+      "symbol": "GLD",
+      "current_price": 440.08,
+      "horizon": 7,
+      "predictions": [
+        {
+          "day": 1,
+          "point": 440.41,
+          "low_10": 439.3,
+          "median": 438.09,
+          "high_90": 455.29
+        },
+        {
+          "day": 2,
+          "point": 439.92,
+          "low_10": 438.76,
+          "median": 437.02,
+          "high_90": 458.21
+        },
+        {
+          "day": 3,
+          "point": 439.36,
+          "low_10": 439.16,
+          "median": 435.55,
+          "high_90": 460.81
+        },
+        {
+          "day": 4,
+          "point": 438.68,
+          "low_10": 438.26,
+          "median": 433.96,
+          "high_90": 462.33
+        },
+        {
+          "day": 5,
+          "point": 437.89,
+          "low_10": 440.79,
+          "median": 432.95,
+          "high_90": 463.43
+        },
+        {
+          "day": 6,
+          "point": 437.33,
+          "low_10": 438.63,
+          "median": 431.92,
+          "high_90": 464.31
+        },
+        {
+          "day": 7,
+          "point": 436.82,
+          "low_10": 435.14,
+          "median": 432.05,
+          "high_90": 465.95
+        }
+      ],
+      "trend": "neutral",
+      "confidence": 0.74,
+      "predicted_change_pct": -0.74,
+      "timestamp": "2026-04-17T06:30:11.303862",
+      "model": "TimesFM 2.5 (200M)"
+    }
+  },
+  "prediction_market": {
+    "timestamp": "2026-04-16T22:30:12.548144",
+    "risk_score": 0,
+    "action": "CLEAR",
+    "action_detail": "予測市場はクリア。モメンタムシグナル通りに実行OK。",
+    "alerts": [],
+    "data_sources": [
+      "gamma_rest",
+      "none"
+    ],
+    "data": {
+      "fed": {
+        "sources": [
+          "gamma_rest"
+        ],
+        "timestamp": "2026-04-16T22:30:12.056670",
+        "rate_cut_prob": 0.0045,
+        "no_change_prob": 0.9915,
+        "rate_hike_prob": 0.0035,
+        "details": [
+          {
+            "question": "Will the Fed decrease interest rates by 50+ bps after the April 2026 meeting?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Fed decrease interest rates by 25 bps after the April 2026 meeting?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will there be no change in Fed interest rates after the April 2026 meeting?",
+            "yes_prob": 0.9915,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Fed increase interest rates by 25+ bps after the April 2026 meeting?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          }
+        ]
+      },
+      "recession": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-16T22:30:12.218337",
+        "recession_prob": 0.0,
+        "details": []
+      },
+      "btc": {
+        "sources": [
+          "none"
+        ],
+        "timestamp": "2026-04-16T22:30:12.343416",
+        "price_levels": []
+      },
+      "geopolitical": {
+        "sources": [
+          "gamma_rest"
+        ],
+        "timestamp": "2026-04-16T22:30:12.448480",
+        "conflict_prob": 0.0215,
+        "tariff_prob": 0.0,
+        "details": [
+          {
+            "question": "Will Spain win the 2026 FIFA World Cup?",
+            "yes_prob": 0.1715,
+            "source": "gamma"
+          },
+          {
+            "question": "Will New Zealand win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Switzerland win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will England win the 2026 FIFA World Cup?",
+            "yes_prob": 0.11,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AM win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will France win the 2026 FIFA World Cup?",
+            "yes_prob": 0.1635,
+            "source": "gamma"
+          },
+          {
+            "question": "Will South Korea win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Haiti win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Brazil win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0855,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Jordan win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Curaçao win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Argentina win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0885,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Germany win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0525,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Colombia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0175,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Iran win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Portugal win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0735,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Ghana win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Netherlands win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0335,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Algeria win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Bosnia-Herzegovina win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Italy win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will USA win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0115,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Canada win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0055,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Turkiye win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Uruguay win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AI win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Mexico win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0125,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Paraguay win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Scotland win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Peru win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Japan win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0195,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Norway win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0225,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Any Other Team win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AG win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Tunisia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AH win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Ecuador win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Uzbekistan win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Morocco win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0165,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Panama win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Iraq win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will South Africa win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Senegal win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Ivory Coast win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Congo DR win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Cape Verde win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Cezchia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Qatar win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Belgium win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0175,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Australia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Saudi Arabia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AL win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Austria win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0055,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Croatia win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AN win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Egypt win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Sweden win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0055,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AJ win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AK win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Team AO win the 2026 FIFA World Cup?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Oklahoma City Thunder win the 2026 NBA Finals?",
+            "yes_prob": 0.445,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Houston Rockets win the 2026 NBA Finals?",
+            "yes_prob": 0.0185,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the New Orleans Pelicans win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Toronto Raptors win the 2026 NBA Finals?",
+            "yes_prob": 0.0055,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Chicago Bulls win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Cleveland Cavaliers win the 2026 NBA Finals?",
+            "yes_prob": 0.042,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the New York Knicks win the 2026 NBA Finals?",
+            "yes_prob": 0.0355,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Minnesota Timberwolves win the 2026 NBA Finals?",
+            "yes_prob": 0.0145,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Phoenix Suns win the 2026 NBA Finals?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Boston Celtics win the 2026 NBA Finals?",
+            "yes_prob": 0.1215,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Indiana Pacers win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Orlando Magic win the 2026 NBA Finals?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Denver Nuggets win the 2026 NBA Finals?",
+            "yes_prob": 0.095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the San Antonio Spurs win the 2026 NBA Finals?",
+            "yes_prob": 0.15,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Milwaukee Bucks win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Los Angeles Clippers win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Golden State Warriors win the 2026 NBA Finals?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Dallas Mavericks win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Detroit Pistons win the 2026 NBA Finals?",
+            "yes_prob": 0.0495,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Memphis Grizzlies win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Los Angeles Lakers win the 2026 NBA Finals?",
+            "yes_prob": 0.0145,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Portland Trail Blazers win the 2026 NBA Finals?",
+            "yes_prob": 0.0025,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Atlanta Hawks win the 2026 NBA Finals?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Brooklyn Nets win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Charlotte Hornets win the 2026 NBA Finals?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Utah Jazz win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Sacramento Kings win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Miami Heat win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Philadelphia 76ers win the 2026 NBA Finals?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Washington Wizards win the 2026 NBA Finals?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by March 31, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by June 30, 2026?",
+            "yes_prob": 1.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by April 30, 2026?",
+            "yes_prob": 1.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by April 15, 2026?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by April 18, 2026?",
+            "yes_prob": 0.9965,
+            "source": "gamma"
+          },
+          {
+            "question": "Israel x Hezbollah ceasefire by April 21, 2026?",
+            "yes_prob": 1.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Fed decrease interest rates by 50+ bps after the April 2026 meeting?",
+            "yes_prob": 0.0015,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Fed decrease interest rates by 25 bps after the April 2026 meeting?",
+            "yes_prob": 0.0045,
+            "source": "gamma"
+          },
+          {
+            "question": "Will there be no change in Fed interest rates after the April 2026 meeting?",
+            "yes_prob": 0.9915,
+            "source": "gamma"
+          },
+          {
+            "question": "Will the Fed increase interest rates by 25+ bps after the April 2026 meeting?",
+            "yes_prob": 0.0035,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Stephen A. Smith win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0115,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Gretchen Whitmer win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0125,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Oprah Winfrey win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person P win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person S win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AB win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BE win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BJ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CB win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CM win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will another person win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Andy Beshear win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0245,
+            "source": "gamma"
+          },
+          {
+            "question": "Will James Talarico win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0215,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person T win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AP win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BZ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CE win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Pete Buttigieg win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0385,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Jon Ossoff win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0585,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Gina Raimondo win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person U win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AQ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BV win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CF win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Raphael Warnock win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Barack Obama win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will George Clooney win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AL win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BH win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BO win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Cory Booker win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Jon Stewart win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0215,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person Z win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AK win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BP win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Tim Walz win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Bernie Sanders win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0055,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AX win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BR win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Mark Kelly win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0265,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Liz Cheney win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0085,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Beto O’Rourke win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AD win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AO win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CD win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CO win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Michelle Obama win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0115,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Zohran Mamdani win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Andrew Yang win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AC win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CN win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0825,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Rahm Emanuel win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0125,
+            "source": "gamma"
+          },
+          {
+            "question": "Will John Fetterman win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0105,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Kim Kardashian win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Ruben Gallego win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AE win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BX win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CP win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Jared Polis win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AJ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Mark Cuban win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Phil Murphy win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BL win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BM win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Wes Moore win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0115,
+            "source": "gamma"
+          },
+          {
+            "question": "Will J.B. Pritzker win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0205,
+            "source": "gamma"
+          },
+          {
+            "question": "Will LeBron James win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Hunter Biden win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person W win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AS win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BF win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BN win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CH win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CI win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Chelsea Clinton win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0085,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AV win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CK win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Dwayne 'The Rock' Johnson win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0115,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AA win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CL win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will MrBeast win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Chris Murphy win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0085,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AF win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AW win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BC win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CQ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Ro Khanna win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0185,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AI win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BY win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Josh Shapiro win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0395,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Roy Cooper win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0095,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Jasmine Crockett win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0065,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person O win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BD win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BG win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BW win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CA win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person V win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AR win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CG win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Kamala Harris win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0655,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Hillary Clinton win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0075,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person R win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person X win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AT win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CC win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person Y win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AU win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CJ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AG win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CR win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AH win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BA win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BU win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person CS win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Gavin Newsom win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.2805,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AM win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AZ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BI win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BT win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AN win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person AY win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BS win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person Q win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BB win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BK win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          },
+          {
+            "question": "Will Person BQ win the 2028 Democratic presidential nomination?",
+            "yes_prob": 0.0,
+            "source": "gamma"
+          }
+        ]
+      },
+      "market_movers": {
+        "timestamp": "2026-04-16T22:30:12.548109",
+        "threshold": 0.1,
+        "movers": [],
+        "alerts": [],
+        "sources": [
+          "gamma_rest_no_change"
+        ]
+      }
+    }
+  },
+  "cost_usd": 0.0
+}
